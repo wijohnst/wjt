@@ -34,7 +34,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/wjt-e2e/**/*"]
+      "exclude": ["apps/wjt-e2e/**/*", "apps/pocs/css-subgrid-e2e/**/*"]
     }
   ]
 }

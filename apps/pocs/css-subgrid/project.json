@@ -1,0 +1,58 @@
+{
+  "name": "css-subgrid",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/pocs/css-subgrid/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/pocs/css-subgrid",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "apps/pocs/css-subgrid/src/main.ts",
+        "tsConfig": "apps/pocs/css-subgrid/tsconfig.app.json",
+        "assets": ["apps/pocs/css-subgrid/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "css-subgrid:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "css-subgrid:build:development"
+        },
+        "production": {
+          "buildTarget": "css-subgrid:build:production"
+        }
+      }
+    }
+  }
+}
