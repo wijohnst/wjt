@@ -1,18 +1,10 @@
 import Router from '@koa/router';
 import { Context } from 'koa';
 
+import { v1 } from '../controllers';
+
 export const router = new Router();
 
 router.get('/', async (ctx: Context) => {
-  ctx.body = `
-      <html>
-          <head>
-              <title>willjohnston.tech</title>
-              <link rel="icon" href="https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico" />
-          </head>
-          <body>
-              <h1>willjohnston.tech</h1>
-          </body>
-      </html>
-    `;
+  await v1.home(ctx);
 });

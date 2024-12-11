@@ -13,10 +13,16 @@
         "platform": "node",
         "outputPath": "dist/apps/wjt",
         "format": ["cjs"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/wjt/src/main.ts",
         "tsConfig": "apps/wjt/tsconfig.app.json",
-        "assets": ["apps/wjt/src/assets"],
+        "assets": [
+          {
+            "glob": "**/*.pug",
+            "input": "apps/wjt/src/views/templates",
+            "output": "views"
+          }
+        ],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,
