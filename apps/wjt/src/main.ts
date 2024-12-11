@@ -1,8 +1,8 @@
 import koa from 'koa';
 import serve from '@ladjs/koa-better-static';
 
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+const host = process.env.HOST ?? '0.0.0.0';
+const port = process.env.PORT ? Number(process.env.PORT) : 4200;
 
 const staticPath = __dirname + '/static';
 const staticServe = serve(staticPath);
@@ -13,7 +13,17 @@ app.use(async (ctx, next) => {
   return staticServe(ctx, next);
 });
 app.use(async (ctx) => {
-  ctx.body = { message: 'Hello API' };
+  ctx.body = `
+  <html>
+      <head>
+          <title>willjohnston.tech</title>
+          <link rel="icon" href="https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico" />
+      </head>
+      <body>
+          <h1>willjohnston.tech</h1>
+      </body>
+  </html>
+  `;
 });
 
 app.listen(port, host, () => {
