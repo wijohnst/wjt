@@ -57,7 +57,7 @@
     },
     "docker-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/wjt/Dockerfile . -t wjt"
+      "command": "docker buildx build --platform linux/amd64,linux/arm64 -f  apps/wjt/Dockerfile -t wijohnst/wjt ."
     }
   }
 }
