@@ -16,18 +16,17 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: aslafy-z/conventional-pr-title-action@v3
-        # Do not perform this job if running locally with @nektos/act
+      - name: Check PR Title
         if: ${{ !github.event.act }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ./.github/actions/check-pr-title
 
-      # Cache node_modules
-      - uses: actions/setup-node@v4
+      - name: Cache node_modules
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
