@@ -27,4 +27,7 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
+      # Conventional PR Title
+      - uses: aslafy-z/conventional-pr-title-action@v3.2.0
+
       - run: npx nx affected -t lint test build
