@@ -21,7 +21,6 @@ jobs:
 
       - uses: aslafy-z/conventional-pr-title-action@v3
         # Do not perform this job if running locally with @nektos/act
-        if: ${{ !github.event.act }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
