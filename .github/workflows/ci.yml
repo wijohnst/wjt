@@ -30,5 +30,3 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - run: npx nx affected -t lint test build
-
-      - run: npx nx release --dry-run --base=main --head=$GITHUB_SHA
