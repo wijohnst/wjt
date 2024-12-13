@@ -1,3 +1,13 @@
+## 0.3.0 (2024-12-13)
+
+### 🚀 Features
+
+- uses package version ([#25](https://github.com/wijohnst/wjt/pull/25))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.2.1 (2024-12-13)
 
 ### 🩹 Fixes
