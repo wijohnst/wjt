@@ -36,5 +36,16 @@
       },
       "exclude": ["apps/wjt-e2e/**/*", "apps/pocs/css-subgrid-e2e/**/*"]
     }
-  ]
+  ],
+  "release": {
+    "projects": ["wjt"],
+    "version": {
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
+    }
+  }
 }
