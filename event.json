@@ -1,0 +1,11 @@
+{
+  "act": true,
+  "pull_request": {
+    "head": {
+      "ref": "sample-head-ref"
+    },
+    "base": {
+      "ref": "sample-base-ref"
+    }
+  }
+}
