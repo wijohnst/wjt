@@ -9,7 +9,7 @@ on:
 
 permissions:
   actions: read
-  contents: read-write
+  contents: write
 
 jobs:
   main:
@@ -55,7 +55,7 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - Configure Git
+      - name: Configure Git
         run: |
             git config --global user.email ${{ secrets.USER_EMAIL }}
             git config --global user.name ${{ secrets.USERNAME }}
