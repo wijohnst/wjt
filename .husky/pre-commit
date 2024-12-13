@@ -1,5 +1,5 @@
-echo `\nRunning husky pre-commit hook... \n`
+echo `\n Running husky pre-commit hook... \n`
 
 # Conventional commits
-echo `\nChecking commit message for conventional commit...\n`
+echo `\n Checking commit message for conventional commit...\n`
 echo "npx --no -- commitlint --edit \$1" > .husky/commit-msg
