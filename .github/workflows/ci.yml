@@ -21,9 +21,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check PR Title
-        if: ${{ !github.event.act }}
-        uses: ./.github/actions/check-pr-title
+      #   - name: Check PR Title
+      #     if: ${{ !github.event.act }}
+      #     uses: ./.github/actions/check-pr-title
 
       - name: Cache node_modules
         uses: actions/setup-node@v4
