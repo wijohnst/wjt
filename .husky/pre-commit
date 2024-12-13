@@ -1,0 +1,1 @@
+echo "Running husky pre-commit hook"
