@@ -1,3 +1,13 @@
+## 0.2.1 (2024-12-13)
+
+### 🩹 Fixes
+
+- adds github token ([#23](https://github.com/wijohnst/wjt/pull/23))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.2.0 (2024-12-13)
 
 ### 🚀 Features
