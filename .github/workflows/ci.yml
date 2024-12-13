@@ -18,6 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: aslafy-z/conventional-pr-title-action@v3
+        # Do not perform this job if running locally with @nektos/act
+        if: ${{ !github.event.act }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Cache node_modules
       - uses: actions/setup-node@v4
         with:
@@ -26,8 +32,5 @@ jobs:
 
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
-
-      # Conventional PR Title
-      - uses: aslafy-z/conventional-pr-title-action@v3.2.0
 
       - run: npx nx affected -t lint test build
