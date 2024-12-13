@@ -29,3 +29,23 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - run: npx nx affected -t lint test build
+        
+  release:
+    runs-on: ubuntu-latest
+    needs: main
+    steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Cache node_modules
+            uses: actions/setup-node@v4
+            with:
+                node-version: 20
+                cache: 'npm'
+        
+        - run: npm ci --legacy-peer-deps
+        - uses: nrwl/nx-set-shas@v4
+
+        - run: npx nx affected -t release --dry-run
