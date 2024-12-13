@@ -9,7 +9,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: read-write
 
 jobs:
   main:
@@ -54,6 +54,11 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
+      - Configure Git
+        run: |
+            git config --global user.email ${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com
+            git config --global user.name ${{ secrets.GITHUB_ACTOR }}
 
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
