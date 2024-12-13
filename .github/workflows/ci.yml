@@ -57,10 +57,12 @@ jobs:
 
       - name: Configure Git
         run: |
-            git config --global user.email ${{ secrets.USER_EMAIL }}
-            git config --global user.name ${{ secrets.USERNAME }}
+          git config --global user.email ${{ secrets.USER_EMAIL }}
+          git config --global user.name ${{ secrets.USERNAME }}
 
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
       - run: npx nx release --skip-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
