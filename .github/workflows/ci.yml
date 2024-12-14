@@ -46,9 +46,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Print latest commit
-        run: echo ${{ github.sha }}
-
       - name: Cache node_modules
         uses: actions/setup-node@v4
         with:
