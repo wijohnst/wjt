@@ -1,0 +1,10 @@
+#26
+# TODO - Checkout repo at main HEAD
+# TODO - Setup Node.js
+# TODO - Cache node_modules
+# TODO - Configure NX
+# TODO - Sing into Docker Hub
+# TODO - nx docker-build wjt
+# TODO - push to Docker Hub
+# TODO - SSH into wjt-prod
+# TODO - Run `wjtr` alias
