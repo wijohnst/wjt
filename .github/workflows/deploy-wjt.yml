@@ -1,12 +1,9 @@
-#26
-# TODO - nx docker-build wjt
-# TODO - push to Docker Hub
-# TODO - SSH into wjt-prod
-# TODO - Run `wjtr` alias
+name: 🚢 Deploy WJT
+
 on:
   push:
     tags:
-      - '**'
+      - v*
   workflow_dispatch:
 
 permissions:
@@ -15,7 +12,6 @@ permissions:
 
 jobs:
   deploy-wjt:
-    name: 🚢 Deploy WJT
     runs-on: ubuntu-latest
     steps:
       - name: 🛒 Checkout
