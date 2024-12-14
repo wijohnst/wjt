@@ -7,5 +7,14 @@
     "base": {
       "ref": "sample-base-ref"
     }
+  },
+  "push": {
+    "head": {
+      "ref": "sample-head-ref"
+    },
+    "base": {
+      "ref": "sample-base-ref"
+    },
+    "tags": ["v.0.3.0"]
   }
 }
