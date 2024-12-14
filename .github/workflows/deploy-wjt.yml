@@ -3,7 +3,7 @@ name: 🚢 Deploy WJT
 on:
   push:
     tags:
-      - v*
+      - '*'
   workflow_dispatch:
 
 permissions:
