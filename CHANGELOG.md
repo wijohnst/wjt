@@ -1,3 +1,17 @@
+## 0.3.1 (2024-12-14)
+
+### 🚀 Features
+
+- **ci/cd:** automates docker build and push ([03ce6f7](https://github.com/wijohnst/wjt/commit/03ce6f7))
+
+### 🩹 Fixes
+
+- triggers deploy ([#28](https://github.com/wijohnst/wjt/pull/28))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.3.0 (2024-12-13)
 
 ### 🚀 Features
