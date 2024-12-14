@@ -1,3 +1,13 @@
+## 0.3.3 (2024-12-14)
+
+### 🩹 Fixes
+
+- updates tag matcher ([#30](https://github.com/wijohnst/wjt/pull/30))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.3.2 (2024-12-14)
 
 ### 🩹 Fixes
