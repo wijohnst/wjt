@@ -1,3 +1,13 @@
+## 0.3.2 (2024-12-14)
+
+### 🩹 Fixes
+
+- orechestrates steps ([#29](https://github.com/wijohnst/wjt/pull/29))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.3.1 (2024-12-14)
 
 ### 🚀 Features
