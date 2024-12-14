@@ -1,3 +1,13 @@
+## 0.3.5 (2024-12-14)
+
+### 🩹 Fixes
+
+- refactors release flow ([#33](https://github.com/wijohnst/wjt/pull/33))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.3.4 (2024-12-14)
 
 ### 🩹 Fixes
