@@ -38,8 +38,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: 📦 Build wjt-service
+        run: npx nx build wjt
+
       - name: 🔨 Build WJT Docker Image
-        run: npx nx docker-build wjt
+        run: docker buildx build --platform linux/amd64 -f apps/wjt/Dockerfile -t wijohnst/wjt .
 
       - name: 📌 Push WJT Docker Image
         run: docker push wijohnst/wjt:latest
