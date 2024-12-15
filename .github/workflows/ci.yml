@@ -86,7 +86,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull wijohnst/wjt:latest
-            docker stop wjt
-            docker rm wjt
-            docker run -d -p 4200:4200 --name wjt wijohnst/wjt:latest
+            sudo docker pull wijohnst/wjt:latest
+            sudo docker stop wjt
+            sudo docker rm wjt
+            sudo docker run -d -p 4200:4200 --name wjt wijohnst/wjt:latest
