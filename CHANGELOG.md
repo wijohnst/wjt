@@ -1,3 +1,13 @@
+## 0.4.1 (2024-12-15)
+
+### 🩹 Fixes
+
+- updates ssh key ([#35](https://github.com/wijohnst/wjt/pull/35))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.4.0 (2024-12-15)
 
 ### 🚀 Features
