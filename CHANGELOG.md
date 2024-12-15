@@ -1,3 +1,13 @@
+## 0.4.2 (2024-12-15)
+
+### 🩹 Fixes
+
+- handles ssh pw ([#36](https://github.com/wijohnst/wjt/pull/36))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.4.1 (2024-12-15)
 
 ### 🩹 Fixes
