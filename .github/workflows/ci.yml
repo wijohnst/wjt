@@ -78,3 +78,15 @@ jobs:
 
       - name: 📌 Push WJT Docker Image
         run: docker push wijohnst/wjt:latest
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker pull wijohnst/wjt:latest
+            docker stop wjt
+            docker rm wjt
+            docker run -d -p 4200:4200 --name wjt wijohnst/wjt:latest
