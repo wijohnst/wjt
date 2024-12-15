@@ -1,3 +1,13 @@
+## 0.4.0 (2024-12-15)
+
+### 🚀 Features
+
+- automates deploy via ssh ([#34](https://github.com/wijohnst/wjt/pull/34))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.3.5 (2024-12-14)
 
 ### 🩹 Fixes
