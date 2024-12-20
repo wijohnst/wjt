@@ -47,7 +47,7 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
-      - run: npx nx affected -t lint test build e2e
+      - run: npx nx affected -t lint test build e2e --verbose=true
 
   release:
     name: 🏷️ Release
