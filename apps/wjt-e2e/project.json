@@ -10,6 +10,17 @@
         "config": "apps/wjt-e2e/playwright.local.config.ts",
         "skipInstall": true
       }
+    },
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "dependsOn": ["build-wjt-service-image"],
+      "options": {
+        "config": "apps/wjt-e2e/playwright.ci.config.ts",
+        "skipInstall": false
+      }
+    },
+    "build-wjt-service-image": {
+      "command": "nx docker-build wjt"
     }
   }
 }
