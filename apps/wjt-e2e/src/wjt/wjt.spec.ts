@@ -1,10 +1,8 @@
-import axios from 'axios';
+import { test, expect } from '@playwright/test';
 
-describe('GET /', () => {
-  it('should return a message', async () => {
-    const res = await axios.get(`/`);
+test('basic test', async ({ page }) => {
+  await page.goto('/');
+  const version = page.locator('text=version: 0.5.0');
 
-    expect(res.status).toBe(200);
-    expect(res.data).toEqual({ message: 'Hello API' });
-  });
+  await expect(version).toBeVisible();
 });
