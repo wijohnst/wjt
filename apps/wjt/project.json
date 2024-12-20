@@ -8,12 +8,13 @@
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
+      "dependsOn": ["bundle-css"],
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
         "outputPath": "dist/apps/wjt",
-        "format": ["cjs"],
         "bundle": true,
+        "format": ["cjs"],
         "main": "apps/wjt/src/main.ts",
         "tsConfig": "apps/wjt/tsconfig.app.json",
         "assets": [
@@ -21,6 +22,11 @@
             "glob": "**/*.pug",
             "input": "apps/wjt/src/views/templates",
             "output": "views"
+          },
+          {
+            "glob": "min.css",
+            "input": "apps/wjt/src/views/styles",
+            "output": "static"
           }
         ],
         "generatePackageJson": true,
@@ -64,6 +70,9 @@
     "docker-build": {
       "dependsOn": ["build"],
       "command": "docker buildx build --platform linux/amd64,linux/arm64 -f  apps/wjt/Dockerfile -t wijohnst/wjt ."
+    },
+    "bundle-css": {
+      "command": "esbuild --bundle apps/wjt/src/views/styles/main.css --outfile=apps/wjt/src/views/styles/min.css --minify"
     }
   }
 }
