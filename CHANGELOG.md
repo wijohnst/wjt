@@ -1,3 +1,13 @@
+## 0.5.0 (2024-12-20)
+
+### 🚀 Features
+
+- **wjt-service:** bundles and minifies css ([#38](https://github.com/wijohnst/wjt/pull/38))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.4.2 (2024-12-15)
 
 ### 🩹 Fixes
