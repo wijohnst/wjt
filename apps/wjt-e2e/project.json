@@ -4,14 +4,11 @@
   "projectType": "application",
   "implicitDependencies": ["wjt"],
   "targets": {
-    "e2e": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+    "e2e:local": {
+      "executor": "@nx/playwright:playwright",
       "options": {
-        "jestConfig": "apps/wjt-e2e/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "dependsOn": ["wjt:build"]
+        "config": "apps/wjt-e2e/playwright.local.config.ts"
+      }
     }
   }
 }

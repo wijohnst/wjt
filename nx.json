@@ -35,6 +35,12 @@
         "targetName": "test"
       },
       "exclude": ["apps/wjt-e2e/**/*", "apps/pocs/css-subgrid-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "e2e"
+      }
     }
   ],
   "release": {
