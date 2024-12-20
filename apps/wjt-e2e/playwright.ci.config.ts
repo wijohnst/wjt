@@ -16,9 +16,9 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'teardown',
-      testMatch: /global\.teardown\.ci\.ts/,
-    },
+    // {
+    //   name: 'teardown',
+    //   testMatch: /global\.teardown\.ci\.ts/,
+    // },
   ],
 });
