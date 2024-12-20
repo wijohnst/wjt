@@ -20,7 +20,8 @@
       }
     },
     "build-wjt-service-image": {
-      "command": "nx docker-build wjt"
+      "command": "nx docker-build wjt",
+      "outputs": ["{workspaceRoot}/dist/apps/wjt-e2e"]
     }
   }
 }
