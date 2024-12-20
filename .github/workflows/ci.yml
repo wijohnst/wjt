@@ -44,6 +44,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - run: npm ci --legacy-peer-deps
+      - uses: nrwl/nx-set-shas@v4
+
       - name: 📦 Build wjt-service
         run: npx nx build wjt
 
