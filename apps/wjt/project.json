@@ -8,7 +8,7 @@
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
-      "dependsOn": ["bundle-css"],
+      "dependsOn": ["bundle-css", "package-blog-static"],
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
@@ -27,6 +27,11 @@
             "glob": "min.css",
             "input": "apps/wjt/src/views/styles",
             "output": "static"
+          },
+          {
+            "glob": "**/*.html",
+            "input": "apps/wjt/src/posts",
+            "output": "static/blog"
           }
         ],
         "generatePackageJson": true,
@@ -73,6 +78,9 @@
     },
     "bundle-css": {
       "command": "esbuild --bundle apps/wjt/src/views/styles/main.css --outfile=apps/wjt/src/views/styles/min.css --minify"
+    },
+    "package-blog-static": {
+      "command": "node apps/wjt/scripts/create-static-posts.cjs"
     }
   }
 }

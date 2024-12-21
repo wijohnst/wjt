@@ -8,7 +8,9 @@ const port = process.env.PORT ? Number(process.env.PORT) : 4200;
 
 const viewsPath = __dirname + '/views';
 const staticPath = __dirname + '/static';
+const staticBlogPath = __dirname + '/blog';
 const staticServe = serve(staticPath);
+const staticBlogServe = serve(staticBlogPath);
 
 const render = views(viewsPath, {
   extension: 'pug',
@@ -19,6 +21,9 @@ const app = new koa();
 app.use(render);
 app.use(async (ctx, next) => {
   return staticServe(ctx, next);
+});
+app.use(async (ctx, next) => {
+  return staticBlogServe(ctx, next);
 });
 app.use(router.routes());
 
