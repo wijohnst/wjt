@@ -27,9 +27,6 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
