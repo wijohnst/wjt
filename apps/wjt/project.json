@@ -80,7 +80,7 @@
       "command": "esbuild --bundle apps/wjt/src/views/styles/main.css --outfile=apps/wjt/src/views/styles/min.css --minify"
     },
     "package-blog-static": {
-      "command": "node /Users/wijohnst/Workspace/wjt/apps/wjt/scripts/create-static-posts.cjs"
+      "command": "node apps/wjt/scripts/create-static-posts.cjs"
     }
   }
 }
