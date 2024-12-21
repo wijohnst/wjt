@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testMatch: '**/*.spec.ts',
   use: {
-    baseURL: 'http://0.0.0.0:4200',
+    baseURL: 'http://localhost:4200',
     screenshot: 'only-on-failure',
   },
   webServer: {
