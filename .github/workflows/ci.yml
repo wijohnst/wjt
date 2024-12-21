@@ -56,6 +56,9 @@ jobs:
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
+      - name: List Docker Images
+        run: docker images ls
+
       - name: Run affected commands
         env:
           CONTAINER_NETWORK: ${{ job.container_network }}
