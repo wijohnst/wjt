@@ -10,10 +10,6 @@
         "config": "apps/wjt-e2e/playwright.config.ts",
         "skipInstall": false
       }
-    },
-    "build-wjt-service-image": {
-      "command": "nx docker-build wjt",
-      "outputs": ["{workspaceRoot}/dist/apps/wjt-e2e"]
     }
   }
 }
