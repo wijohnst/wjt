@@ -8,7 +8,7 @@ export default defineConfig({
   },
   webServer: {
     command:
-      'docker run -p 4200:4200 --name wjt-e2e-latest --rm -d wijohnst/wjt:latest',
+      'docker run -p 4200:4200 --name wjt-e2e-latest --rm -d wijohnst/wjt',
     reuseExistingServer: false,
   },
   projects: [
