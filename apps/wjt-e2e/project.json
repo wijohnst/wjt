@@ -14,7 +14,7 @@
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/wjt-e2e/playwright.ci.config.ts",
+        "config": "apps/wjt-e2e/playwright.local.config.ts",
         "skipInstall": false
       }
     },
