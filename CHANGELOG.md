@@ -1,3 +1,13 @@
+## 0.6.0 (2024-12-21)
+
+### 🚀 Features
+
+- **wjt-e2e:** adds playwright ([#39](https://github.com/wijohnst/wjt/pull/39))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.5.0 (2024-12-20)
 
 ### 🚀 Features
