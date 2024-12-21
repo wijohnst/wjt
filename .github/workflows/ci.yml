@@ -57,6 +57,9 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - run: npx nx affected -t lint test build e2e
+      env:
+        NO_PROXY: 'localhost, '0.0.0.0'
+        no_proxy: 'localhost', '0.0.0.0'
 
   release:
     name: 🏷️ Release
