@@ -1,3 +1,13 @@
+## 0.7.0 (2024-12-21)
+
+### 🚀 Features
+
+- **wjt-service:** implements basic blog rendering from markdown ([#44](https://github.com/wijohnst/wjt/pull/44))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.6.0 (2024-12-21)
 
 ### 🚀 Features
