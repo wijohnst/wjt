@@ -57,7 +57,7 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - name: List Docker Images
-        run: docker images ls
+        run: docker image ls
 
       - name: Run affected commands
         env:
