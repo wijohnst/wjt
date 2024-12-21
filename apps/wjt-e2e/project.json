@@ -4,17 +4,10 @@
   "projectType": "application",
   "implicitDependencies": ["wjt"],
   "targets": {
-    "e2e:local": {
-      "executor": "@nx/playwright:playwright",
-      "options": {
-        "config": "apps/wjt-e2e/playwright.local.config.ts",
-        "skipInstall": true
-      }
-    },
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/wjt-e2e/playwright.local.config.ts",
+        "config": "apps/wjt-e2e/playwright.config.ts",
         "skipInstall": false
       }
     },

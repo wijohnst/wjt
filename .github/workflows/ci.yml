@@ -30,42 +30,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Docker Login
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
-
-      - name: 📦 Build wjt-service
-        run: npx nx build wjt
-
-      - name: 🔨 Build WJT Docker Image
-        run: docker buildx build --platform linux/amd64 -f apps/wjt/Dockerfile -t wijohnst/wjt .
-
-      - run: npm ci --legacy-peer-deps
-      - uses: nrwl/nx-set-shas@v4
-
-      - name: List Docker Images
-        run: docker image ls
 
       - name: Run affected commands
-        env:
-          CONTAINER_NETWORK: ${{ job.container_network }}
-        run: |
-          NO_PROXY=$NO_PROXY,localhost
-          no_proxy=$no_proxy,localhost
-          npx nx affected -t lint test build e2e
+        run: npx nx affected -t lint test build e2e
 
   release:
     name: 🏷️ Release
