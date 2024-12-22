@@ -1,0 +1,7 @@
+.post {
+    height: 100%;
+
+    border: solid thin black;
+
+    padding: 1rem;
+}

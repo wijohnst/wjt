@@ -13,9 +13,9 @@ const blogPosts = fs.readdirSync(postsPath);
 const reader = new c.Parser();
 const writer = new c.HtmlRenderer();
 
-const styleTemplate = `
-<link rel="stylesheet" href="min.css">
-`
+const getStylesheet = () => fs.readFileSync(path.join(__dirname, '..', 'src/views/styles/min.css'), 'utf8');
+
+const styleTemplate = `<style>${getStylesheet()}</style>`
 
 const extractFrontMatter = (path) => {
   const file = fs.readFileSync(path, 'utf8');
@@ -55,8 +55,10 @@ blogPosts.forEach((fileName) => {
     const { frontMatter, content} = extractFrontMatter(filePath);
     const parsed = reader.parse(content);
     const html = writer.render(parsed);
-    const headTemplate = head({ title: `wjt blog - ${frontMatter.title ?? ''}`});
-    const finalRender = ''.concat(headTemplate,html); 
+    const finalHtml = `<div class="post">${html}</div>`;
+    const styleMatcher = /<link rel="stylesheet" href="min.css"\/>/g
+    const headTemplate = head({ title: `wjt blog - ${frontMatter.title ?? ''}`}).replace(styleMatcher,'');
+    const finalRender = ''.concat(headTemplate,styleTemplate,finalHtml); 
 
     fs.writeFileSync(filePath.replace('.md', '.html'), finalRender);
 })
