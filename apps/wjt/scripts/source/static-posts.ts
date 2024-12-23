@@ -24,6 +24,7 @@ const defaultFrontMatter: DefaultFrontMatterData = {
   author: '',
   slug: '',
 };
+export const postsPath = 'src/posts';
 
 export const getPath = (subpath: string) => {
   if (process.env.NODE_ENV === 'test') {
@@ -37,13 +38,16 @@ const getStylesheet = () =>
 
 const styleTemplate = `<style>${getStylesheet()}</style>`;
 
+export const getFiles = () => {
+  return readdirSync(getPath(postsPath)).filter((file) => file.endsWith('.md'));
+};
+
 /**
  * Returns the markdown content of all posts in the `src/posts` directory
  * @returns {Post[]} An array of raw post content, including frontmatter
  */
 export const getRawPosts = (): RawPost[] => {
-  const postsPath = 'src/posts';
-  const files = readdirSync(postsPath).filter((file) => file.endsWith('.md'));
+  const files = getFiles();
 
   return files.map((file) => {
     const fileData = readFileSync(getPath(`${postsPath}/${file}`), 'utf-8');

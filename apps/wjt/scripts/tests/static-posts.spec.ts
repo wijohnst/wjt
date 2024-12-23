@@ -3,7 +3,7 @@ import {
   parseRawPosts,
   getFrontmatter,
   getRenderedPost,
-} from './static-posts';
+} from '../source/static-posts';
 
 import mockFs from 'mock-fs';
 import { readFileSync } from 'fs';
