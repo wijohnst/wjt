@@ -92,6 +92,11 @@ export const getFrontmatter = (rawPost: RawPost): DefaultFrontMatterData => {
   );
 };
 
+/**
+ * Accepts a post object and returns the rendered post as a UTF-8 string. This string can be written to an HTML file and server to the client.
+ * @param {Post} post
+ * @returns {string} The rendered post
+ */
 export const getRenderedPost = (post: Post): string => {
   const { frontMatter, content } = post;
   const headTemplate = compileFile(getPath('src/views/templates/head.pug'))({
@@ -106,13 +111,3 @@ export const getRenderedPost = (post: Post): string => {
 
   return finalRender;
 };
-
-// const init = () => {
-//   const posts = parseRawPosts();
-//   posts.forEach((post) => {
-//     const renderedPost = getRenderedPost(post);
-//     console.log(renderedPost);
-//   });
-// };
-
-// init();

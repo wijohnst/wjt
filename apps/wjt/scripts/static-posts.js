@@ -84,6 +84,11 @@ var getFrontmatter = function (rawPost) {
     }, defaultFrontMatter)) !== null && _c !== void 0 ? _c : defaultFrontMatter);
 };
 exports.getFrontmatter = getFrontmatter;
+/**
+ * Accepts a post object and returns the rendered post as a UTF-8 string. This string can be written to an HTML file and server to the client.
+ * @param {Post} post
+ * @returns {string} The rendered post
+ */
 var getRenderedPost = function (post) {
     var frontMatter = post.frontMatter, content = post.content;
     var headTemplate = (0, pug_1.compileFile)((0, exports.getPath)('src/views/templates/head.pug'))({
@@ -97,11 +102,3 @@ var getRenderedPost = function (post) {
     return finalRender;
 };
 exports.getRenderedPost = getRenderedPost;
-// const init = () => {
-//   const posts = parseRawPosts();
-//   posts.forEach((post) => {
-//     const renderedPost = getRenderedPost(post);
-//     console.log(renderedPost);
-//   });
-// };
-// init();

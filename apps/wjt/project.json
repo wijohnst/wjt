@@ -80,6 +80,7 @@
       "command": "esbuild --bundle apps/wjt/src/views/styles/main.css --outfile=apps/wjt/src/views/styles/min.css --minify"
     },
     "package-blog-static": {
+      "dependsOn": ["compile-scripts"],
       "command": "node apps/wjt/scripts/create-static-posts.js"
     },
     "compile-scripts": {
