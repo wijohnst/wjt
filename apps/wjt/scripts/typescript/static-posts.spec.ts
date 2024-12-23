@@ -6,7 +6,7 @@ import {
 } from './static-posts';
 
 import mockFs from 'mock-fs';
-import fs from 'fs';
+import { readFileSync } from 'fs';
 
 const mockPostContent = [
   `---
@@ -39,10 +39,10 @@ describe('Static Posts', () => {
         'post2.html': `<div>Post 2</div>`,
       },
       'src/views/templates': {
-        'head.pug': fs.readFileSync('src/views/templates/head.pug', 'utf-8'),
+        'head.pug': readFileSync('src/views/templates/head.pug', 'utf-8'),
       },
       'src/views/styles': {
-        'min.css': fs.readFileSync('src/views/styles/min.css', 'utf-8'),
+        'min.css': readFileSync('src/views/styles/min.css', 'utf-8'),
       },
     });
   });

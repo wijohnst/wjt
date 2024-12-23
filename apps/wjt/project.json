@@ -83,7 +83,7 @@
       "command": "node apps/wjt/scripts/create-static-posts.cjs"
     },
     "compile-scripts": {
-      "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/typescript/*.ts"
+      "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/typescript/*.ts --module commonjs"
     }
   }
 }

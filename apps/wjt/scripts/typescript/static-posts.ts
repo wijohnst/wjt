@@ -1,6 +1,8 @@
-import fs from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { Parser, HtmlRenderer } from 'commonmark';
 import { compileFile } from 'pug';
+import { cwd } from 'process';
+import { join } from 'path';
 
 export type DefaultFrontMatterData = {
   title: string;
@@ -23,8 +25,15 @@ const defaultFrontMatter: DefaultFrontMatterData = {
   slug: '',
 };
 
+export const getPath = (subpath: string) => {
+  if (process.env.NODE_ENV === 'test') {
+    return subpath;
+  }
+  return join(cwd(), `apps/wjt/${subpath}`);
+};
+
 const getStylesheet = () =>
-  fs.readFileSync('src/views/styles/min.css', 'utf-8');
+  readFileSync(getPath('src/views/styles/min.css'), 'utf-8');
 
 const styleTemplate = `<style>${getStylesheet()}</style>`;
 
@@ -34,12 +43,10 @@ const styleTemplate = `<style>${getStylesheet()}</style>`;
  */
 export const getRawPosts = (): RawPost[] => {
   const postsPath = 'src/posts';
-  const files = fs
-    .readdirSync(postsPath)
-    .filter((file) => file.endsWith('.md'));
+  const files = readdirSync(postsPath).filter((file) => file.endsWith('.md'));
 
   return files.map((file) => {
-    const fileData = fs.readFileSync(`${postsPath}/${file}`, 'utf-8');
+    const fileData = readFileSync(getPath(`${postsPath}/${file}`), 'utf-8');
     return fileData;
   });
 };
@@ -83,7 +90,7 @@ export const getFrontmatter = (rawPost: RawPost): DefaultFrontMatterData => {
 
 export const getRenderedPost = (post: Post): string => {
   const { frontMatter, content } = post;
-  const headTemplate = compileFile('src/views/templates/head.pug')({
+  const headTemplate = compileFile(getPath('src/views/templates/head.pug'))({
     title: frontMatter.title,
   }).replace(styleRegex, '');
   const parsedContent = new Parser().parse(content);
@@ -95,3 +102,13 @@ export const getRenderedPost = (post: Post): string => {
 
   return finalRender;
 };
+
+// const init = () => {
+//   const posts = parseRawPosts();
+//   posts.forEach((post) => {
+//     const renderedPost = getRenderedPost(post);
+//     console.log(renderedPost);
+//   });
+// };
+
+// init();
