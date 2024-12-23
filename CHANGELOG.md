@@ -1,3 +1,13 @@
+## 0.7.1 (2024-12-23)
+
+### 🩹 Fixes
+
+- **wjt-service:** improves static rendering ([#46](https://github.com/wijohnst/wjt/pull/46))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.7.0 (2024-12-21)
 
 ### 🚀 Features
