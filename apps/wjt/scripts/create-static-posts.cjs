@@ -1,5 +1,3 @@
-// @ts-check
-
 const c = require('commonmark');
 const fs = require('fs');
 const path = require('path');
