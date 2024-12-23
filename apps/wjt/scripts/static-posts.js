@@ -11,7 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRenderedPost = exports.getFrontmatter = exports.parseRawPosts = exports.getRawPosts = exports.getFiles = exports.getPath = exports.postsPath = void 0;
+exports.getRenderedPost = exports.getFrontmatter = exports.parseRawPosts = exports.getRawPosts = exports.getMarkdownFiles = exports.getPath = exports.postsPath = void 0;
 var fs_1 = require("fs");
 var commonmark_1 = require("commonmark");
 var pug_1 = require("pug");
@@ -26,6 +26,11 @@ var defaultFrontMatter = {
     slug: '',
 };
 exports.postsPath = 'src/posts';
+/**
+ * Wraps relative paths with the current working directory and returns the full path
+ * @param {string} subpath
+ * @returns {string}
+ */
 var getPath = function (subpath) {
     if (process.env.NODE_ENV === 'test') {
         return subpath;
@@ -33,20 +38,28 @@ var getPath = function (subpath) {
     return (0, path_1.join)((0, process_1.cwd)(), "apps/wjt/".concat(subpath));
 };
 exports.getPath = getPath;
+/**
+ * Returns the minified default stylesheet for the application
+ * @returns {string} The contents of the minified stylesheet
+ */
 var getStylesheet = function () {
     return (0, fs_1.readFileSync)((0, exports.getPath)('src/views/styles/min.css'), 'utf-8');
 };
 var styleTemplate = "<style>".concat(getStylesheet(), "</style>");
-var getFiles = function () {
+/**
+ * Returns an array of markdown filename strings in the `src/posts` directory
+ * @returns {string[]} An array of file names in the `src/posts` directory
+ */
+var getMarkdownFiles = function () {
     return (0, fs_1.readdirSync)((0, exports.getPath)(exports.postsPath)).filter(function (file) { return file.endsWith('.md'); });
 };
-exports.getFiles = getFiles;
+exports.getMarkdownFiles = getMarkdownFiles;
 /**
  * Returns the markdown content of all posts in the `src/posts` directory
  * @returns {Post[]} An array of raw post content, including frontmatter
  */
 var getRawPosts = function () {
-    var files = (0, exports.getFiles)();
+    var files = (0, exports.getMarkdownFiles)();
     return files.map(function (file) {
         var fileData = (0, fs_1.readFileSync)((0, exports.getPath)("".concat(exports.postsPath, "/").concat(file)), 'utf-8');
         return fileData;

@@ -1,5 +1,5 @@
 import {
-  getFiles,
+  getMarkdownFiles,
   parseRawPosts,
   getRenderedPost,
   postsPath,
@@ -10,7 +10,7 @@ import { join } from 'path';
 import { writeFileSync } from 'fs';
 
 const init = () => {
-  const fileNames = getFiles();
+  const fileNames = getMarkdownFiles();
 
   parseRawPosts().forEach((post, index) => {
     const fileName = fileNames[index];

@@ -26,19 +26,32 @@ const defaultFrontMatter: DefaultFrontMatterData = {
 };
 export const postsPath = 'src/posts';
 
-export const getPath = (subpath: string) => {
+/**
+ * Wraps relative paths with the current working directory and returns the full path
+ * @param {string} subpath
+ * @returns {string}
+ */
+export const getPath = (subpath: string): string => {
   if (process.env.NODE_ENV === 'test') {
     return subpath;
   }
   return join(cwd(), `apps/wjt/${subpath}`);
 };
 
-const getStylesheet = () =>
+/**
+ * Returns the minified default stylesheet for the application
+ * @returns {string} The contents of the minified stylesheet
+ */
+const getStylesheet = (): string =>
   readFileSync(getPath('src/views/styles/min.css'), 'utf-8');
 
 const styleTemplate = `<style>${getStylesheet()}</style>`;
 
-export const getFiles = () => {
+/**
+ * Returns an array of markdown filename strings in the `src/posts` directory
+ * @returns {string[]} An array of file names in the `src/posts` directory
+ */
+export const getMarkdownFiles = (): string[] => {
   return readdirSync(getPath(postsPath)).filter((file) => file.endsWith('.md'));
 };
 
@@ -47,7 +60,7 @@ export const getFiles = () => {
  * @returns {Post[]} An array of raw post content, including frontmatter
  */
 export const getRawPosts = (): RawPost[] => {
-  const files = getFiles();
+  const files = getMarkdownFiles();
 
   return files.map((file) => {
     const fileData = readFileSync(getPath(`${postsPath}/${file}`), 'utf-8');
