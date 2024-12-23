@@ -1,6 +1,7 @@
 ---
 title: My Example Post
 author: Will Johnston
+slug: example-post
 ---
 
 # Example Post

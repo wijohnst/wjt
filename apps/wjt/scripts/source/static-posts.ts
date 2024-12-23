@@ -16,7 +16,10 @@ export type Post = {
   content: string;
 };
 
+export const postsPath = 'src/posts';
+
 const frontmatterRegex = /---([\s\S]*?)---/g;
+const frontmatterDelimiterRegex = /---/g;
 const newlineRegex = /\n/g;
 const styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
 const defaultFrontMatter: DefaultFrontMatterData = {
@@ -24,7 +27,7 @@ const defaultFrontMatter: DefaultFrontMatterData = {
   author: '',
   slug: '',
 };
-export const postsPath = 'src/posts';
+const requiredFields = Object.keys(defaultFrontMatter);
 
 /**
  * Wraps relative paths with the current working directory and returns the full path
@@ -82,27 +85,41 @@ export const parseRawPosts = (): Post[] => {
 };
 
 /**
- * Returns the frontmatter of a post
+ * Returns the frontmatter of a post or throws if any required fields are missing
  * @param {RawPost }rawPost
  * @returns {DefaultFrontMatterData}
  */
 export const getFrontmatter = (rawPost: RawPost): DefaultFrontMatterData => {
-  const rawFrontmatter = rawPost.match(frontmatterRegex)?.[0] ?? '';
+  const rawFrontmatter = rawPost
+    .match(frontmatterRegex)?.[0]
+    // Removes the frontmatter delimiter from the frontmatter string
+    .replace(frontmatterDelimiterRegex, '')
+    .trim();
 
-  return (
-    rawFrontmatter.split(newlineRegex).reduce((acc, line) => {
-      if (line === '---') return acc;
+  if (!rawFrontmatter) {
+    throw new Error(`Frontmatter is missing in the post: ${rawPost}`);
+  }
 
+  const parsedFrontmatter = rawFrontmatter
+    .split(newlineRegex)
+    .reduce((acc, line) => {
       const [key, value] = line.split(':').map((str) => str.trim());
-
-      if (!key || !value) return acc;
 
       return {
         ...acc,
         [key]: value,
       };
-    }, defaultFrontMatter) ?? defaultFrontMatter
-  );
+    }, defaultFrontMatter);
+
+  requiredFields.forEach((field) => {
+    if (!parsedFrontmatter[field]) {
+      throw new Error(
+        `Missing required frontmatter field: ${field} in post: ${rawPost}`
+      );
+    }
+  });
+
+  return parsedFrontmatter;
 };
 
 /**
