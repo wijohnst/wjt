@@ -8,10 +8,7 @@ var init = function () {
     (0, static_posts_1.parseRawPosts)().forEach(function (post, index) {
         var fileName = fileNames[index];
         var filePath = (0, path_1.join)('apps/wjt', static_posts_1.postsPath, fileName);
-        console.log('filePath', filePath);
         var renderedPost = (0, static_posts_1.getRenderedPost)(post);
-        console.log(renderedPost);
-        // mkdirSync(dirname(filePath), { recursive: true });
         (0, fs_1.writeFileSync)(filePath.replace('.md', '.html'), renderedPost);
     });
 };
