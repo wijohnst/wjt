@@ -5,29 +5,10 @@ import {
   getRenderedPost,
 } from '../source/static-posts';
 
+import { mockPostContent } from './static-posts.mocks';
+
 import mockFs from 'mock-fs';
 import { readFileSync } from 'fs';
-
-const mockPostContent = [
-  `---
-    title: Post 1
-    author: Some Author
-    slug: post-1
-    ---
-    # Post 1
-
-    This is the first post.
-    `,
-  `---
-    title: Post 2
-    author: Another Author
-    slug: post-2
-    ---
-    # Post 2
-
-    This is the second post.
-    `,
-];
 
 describe('Static Posts', () => {
   beforeEach(() => {
@@ -84,6 +65,10 @@ describe('Static Posts', () => {
       expect(getFrontmatter).toBeDefined();
     });
 
+    test('should throw when frontmatter is missing', () => {
+      expect(() => getFrontmatter('')).toThrow();
+    });
+
     test('should return the frontmatter of a post', () => {
       const frontmatter = getFrontmatter(mockPostContent[0]);
       expect(frontmatter).toEqual({
@@ -91,6 +76,17 @@ describe('Static Posts', () => {
         author: 'Some Author',
         slug: 'post-1',
       });
+    });
+
+    test('frontmatter should not include `---` delimiters', () => {
+      const frontmatter = getFrontmatter(mockPostContent[0]);
+      expect(frontmatter).not.toContain('---');
+    });
+
+    test('should throw when default frontmatter is incomplete', () => {
+      const incompleteFrontmatter = mockPostContent[2];
+
+      expect(() => getFrontmatter(incompleteFrontmatter)).toThrow();
     });
   });
 

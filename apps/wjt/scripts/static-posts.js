@@ -18,6 +18,7 @@ var pug_1 = require("pug");
 var process_1 = require("process");
 var path_1 = require("path");
 var frontmatterRegex = /---([\s\S]*?)---/g;
+var frontmatterDelimiterRegex = /---/g;
 var newlineRegex = /\n/g;
 var styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
 var defaultFrontMatter = {
@@ -84,17 +85,26 @@ exports.parseRawPosts = parseRawPosts;
  * @returns {DefaultFrontMatterData}
  */
 var getFrontmatter = function (rawPost) {
-    var _a, _b, _c;
-    var rawFrontmatter = (_b = (_a = rawPost.match(frontmatterRegex)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
-    return ((_c = rawFrontmatter.split(newlineRegex).reduce(function (acc, line) {
+    var _a;
+    var rawFrontmatter = (_a = rawPost
+        .match(frontmatterRegex)) === null || _a === void 0 ? void 0 : _a[0].replace(frontmatterDelimiterRegex, '').trim();
+    if (!rawFrontmatter) {
+        throw new Error("Frontmatter is missing in the post: ".concat(rawPost));
+    }
+    var requiredFields = Object.keys(defaultFrontMatter);
+    var parsedFrontmatter = rawFrontmatter
+        .split(newlineRegex)
+        .reduce(function (acc, line) {
         var _a;
-        if (line === '---')
-            return acc;
         var _b = line.split(':').map(function (str) { return str.trim(); }), key = _b[0], value = _b[1];
-        if (!key || !value)
-            return acc;
         return __assign(__assign({}, acc), (_a = {}, _a[key] = value, _a));
-    }, defaultFrontMatter)) !== null && _c !== void 0 ? _c : defaultFrontMatter);
+    }, defaultFrontMatter);
+    requiredFields.forEach(function (field) {
+        if (!parsedFrontmatter[field]) {
+            throw new Error("Missing required frontmatter field: ".concat(field, " in post: ").concat(rawPost));
+        }
+    });
+    return parsedFrontmatter;
 };
 exports.getFrontmatter = getFrontmatter;
 /**
