@@ -10,9 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPath = exports.renderPost = exports.getFrontmatter = exports.parseRawPost = exports.requiredFields = exports.defaultFrontMatter = exports.styleRegex = exports.newlineRegex = exports.frontmatterDelimiterRegex = exports.frontmatterRegex = void 0;
 var pug_1 = require("pug");
@@ -20,7 +17,6 @@ var commonmark_1 = require("commonmark");
 var process_1 = require("process");
 var path_1 = require("path");
 var fs_1 = require("fs");
-var html_prettify_1 = __importDefault(require("html-prettify"));
 exports.frontmatterRegex = /---([\s\S]*?)---/g;
 exports.frontmatterDelimiterRegex = /---/g;
 exports.newlineRegex = /\n/g;
@@ -85,8 +81,7 @@ var renderPost = function (post) {
     var withWrapper = "<div class=\"post\">".concat(html, "</div>");
     var openTag = '<html>';
     var closeTag = '</html>';
-    var finalRender = (0, html_prettify_1.default)("".concat(openTag, headTemplate, styleTemplate, withWrapper, closeTag));
-    console.log(finalRender);
+    var finalRender = "".concat(openTag, headTemplate, styleTemplate, withWrapper, closeTag);
     return finalRender;
 };
 exports.renderPost = renderPost;

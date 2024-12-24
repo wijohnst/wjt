@@ -92,8 +92,6 @@ export const renderPost = (post: Post): string => {
     closeTag
   );
 
-  console.log(finalRender);
-
   return finalRender;
 };
 

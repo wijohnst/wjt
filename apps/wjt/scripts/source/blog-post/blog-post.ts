@@ -21,13 +21,13 @@ export type Post = {
 
 export interface IBlogPost {
   rawPost: RawPost;
-  parsedPost: Post | null;
-  postMarkup: string | null;
+  parsedPost: Post;
+  postMarkup: string;
 }
 
 export class BlogPost implements IBlogPost {
-  parsedPost: Post | null = null;
-  postMarkup: string | null = null;
+  parsedPost: Post;
+  postMarkup: string;
 
   constructor(public rawPost: RawPost) {
     this.parsedPost = parseRawPost(rawPost);

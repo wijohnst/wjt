@@ -32,6 +32,8 @@ jobs:
 
       - name: Run affected commands
         run: npx nx affected -t lint test build e2e
+        env:
+          POSTS_PATH: apps/wjt/src/posts
 
   release:
     name: 🏷️ Release
