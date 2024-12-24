@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getMockPostContent return value should match snapshots 1`] = `
+"---
+title: Post 1
+author: Some Author
+slug: post-1
+---
+# Post 1
+
+This is the first post."
+`;
