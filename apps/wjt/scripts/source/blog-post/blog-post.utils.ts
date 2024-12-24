@@ -81,8 +81,18 @@ export const renderPost = (post: Post): string => {
   const html = writer.render(parsedContent);
 
   const withWrapper = `<div class="post">${html}</div>`;
+  const openTag = '<html>';
+  const closeTag = '</html>';
 
-  const finalRender = ''.concat(headTemplate, styleTemplate, withWrapper);
+  const finalRender = ``.concat(
+    openTag,
+    headTemplate,
+    styleTemplate,
+    withWrapper,
+    closeTag
+  );
+
+  console.log(finalRender);
 
   return finalRender;
 };

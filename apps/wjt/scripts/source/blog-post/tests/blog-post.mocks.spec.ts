@@ -1,4 +1,4 @@
-import { getMockPostContent, mockValues } from './blog-post.mocks';
+import { getMockPostContent, rawPosts } from '../blog-post.mocks';
 
 describe('getMockPostContent', () => {
   test('should be defined', () => {
@@ -6,6 +6,8 @@ describe('getMockPostContent', () => {
   });
 
   test('return value should match snapshots', () => {
-    expect(getMockPostContent(mockValues[0])).toMatchSnapshot();
+    rawPosts.forEach((rawPost) => {
+      expect(getMockPostContent(rawPost)).toMatchSnapshot();
+    });
   });
 });

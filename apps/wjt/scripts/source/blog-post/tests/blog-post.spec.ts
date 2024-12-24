@@ -1,6 +1,10 @@
-import { BlogPost } from './blog-post';
+import { BlogPost } from '../blog-post';
 
-import { mockPostContent } from './blog-post.mocks';
+import {
+  rawPostMocks,
+  rawContentMocks,
+  getMockFrontmatter,
+} from '../blog-post.mocks';
 
 describe('blog-post', () => {
   describe('BlogPost', () => {
@@ -13,17 +17,16 @@ describe('blog-post', () => {
     let sut: BlogPost;
 
     beforeEach(() => {
-      sut = new BlogPost(mockPostContent[0]);
+      sut = new BlogPost(rawPostMocks[0]);
     });
 
     test('should return a parsed post object', () => {
+      const frontMatter = getMockFrontmatter('Post 1', 'Some Author', 'post-1');
+      const content = rawContentMocks[0];
+
       expect(sut.parsedPost).toStrictEqual({
-        frontMatter: {
-          title: 'Post 1',
-          author: 'Some Author',
-          slug: 'post-1',
-        },
-        content: `# Post 1\n\nThis is the first post.`,
+        frontMatter,
+        content,
       });
     });
 

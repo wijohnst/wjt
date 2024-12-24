@@ -1,10 +1,6 @@
-// export const mockPostContent = [
-//   '---\ntitle: Post 1\nauthor: Some Author\nslug: post-1\n---\n# Post 1\n\nThis is the first post.\n',
-//   '---\ntitle: Post 2\n\nauthor: Another Author\nslug: post-2\n---\n# Post 2\n\nThis is the second post.\n',
-//   '---\ntitle: Post 3\n\nauthor: Yet Another Author\n---\n# Post 3\nThis is the third post.\n',
-// ];
+import { DefaultFrontMatter } from './blog-post';
 
-export const mockValues = [
+export const rawPosts = [
   [
     '---',
     'title: Post 1',
@@ -37,8 +33,30 @@ export const getMockPostContent = (mockValues: string[]): string => {
   return mockValues.join('\n');
 };
 
-export const mockPostContent = [
-  getMockPostContent(mockValues[0]),
-  getMockPostContent(mockValues[1]),
-  getMockPostContent(mockValues[2]),
+export const getMockFrontmatter = (
+  title: string,
+  author: string,
+  slug: string
+): DefaultFrontMatter => ({
+  title,
+  author,
+  slug,
+});
+
+export const rawPostMocks = [
+  getMockPostContent(rawPosts[0]),
+  getMockPostContent(rawPosts[1]),
+  getMockPostContent(rawPosts[2]),
+];
+
+export const rawFrontmatterMocks = [
+  getMockPostContent(rawPosts[0].slice(0, 5)),
+  getMockPostContent(rawPosts[1].slice(0, 5)),
+  getMockPostContent(rawPosts[2].slice(0, 4)),
+];
+
+export const rawContentMocks = [
+  getMockPostContent(rawPosts[0].slice(5)),
+  getMockPostContent(rawPosts[1].slice(5)),
+  getMockPostContent(rawPosts[2].slice(4)),
 ];
