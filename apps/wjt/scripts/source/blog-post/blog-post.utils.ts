@@ -2,7 +2,7 @@ import { renderFile } from 'pug';
 import { Parser, HtmlRenderer } from 'commonmark';
 import { cwd } from 'process';
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 
 import { DefaultFrontMatter, RawPost, Post } from './blog-post';
 export const frontmatterRegex = /---([\s\S]*?)---/g;
@@ -15,6 +15,10 @@ export const defaultFrontMatter: DefaultFrontMatter = {
   slug: '',
 };
 export const requiredFields = Object.keys(defaultFrontMatter);
+export const postsPath =
+  process.env.NODE_ENV === 'test'
+    ? 'src/posts'
+    : process.env.POSTS_PATH || 'src/posts';
 
 /**
  * Returns an array of parsed post objects
@@ -115,3 +119,16 @@ const getStylesheet = (): string =>
   readFileSync(getPath('src/views/styles/min.css'), 'utf-8');
 
 const styleTemplate = `<style>${getStylesheet()}</style>`;
+
+/**
+ * Returns the markdown file names in the posts directory
+ * @returns {string[]}
+ */
+export const getRawPostFileNames = (): string[] => {
+  return readdirSync(postsPath).filter((file) => file.endsWith('.md'));
+};
+
+export const getRawBlogPost = (rawPostFileName: string): RawPost => {
+  const rawPostPath = join(postsPath, rawPostFileName);
+  return readFileSync(rawPostPath, 'utf8');
+};

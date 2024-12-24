@@ -1,21 +1,11 @@
-import { BlogPost, RawPost } from './blog-post';
-import { readdirSync, readFileSync, writeFileSync } from 'fs';
+import {
+  BlogPost,
+  getRawBlogPost,
+  getRawPostFileNames,
+  postsPath,
+} from './blog-post';
+import { writeFileSync } from 'fs';
 import { join } from 'path';
-
-const postsPath = process.env.POSTS_PATH || 'src/posts';
-
-/**
- * Returns the markdown file names in the posts directory
- * @returns {string[]}
- */
-export const getRawPostFileNames = (): string[] => {
-  return readdirSync(postsPath).filter((file) => file.endsWith('.md'));
-};
-
-export const getRawBlogPost = (rawPostFileName: string): RawPost => {
-  const rawPostPath = join(postsPath, rawPostFileName);
-  return readFileSync(rawPostPath, 'utf8');
-};
 
 const init = () => {
   console.log('Generating blog posts 📝...\n\n');

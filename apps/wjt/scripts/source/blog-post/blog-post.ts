@@ -1,9 +1,3 @@
-import { renderFile } from 'pug';
-import { Parser, HtmlRenderer } from 'commonmark';
-import { cwd } from 'process';
-import { join } from 'path';
-import { readFileSync } from 'fs';
-
 import { parseRawPost, renderPost } from './blog-post.utils';
 
 export type DefaultFrontMatter = {
