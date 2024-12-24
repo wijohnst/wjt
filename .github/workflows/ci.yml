@@ -75,6 +75,8 @@ jobs:
 
       - name: 📦 Build wjt-service
         run: npx nx build wjt
+        env:
+          POSTS_PATH: apps/wjt/src/posts
 
       - name: 🔨 Build WJT Docker Image
         run: docker buildx build --platform linux/amd64 -f apps/wjt/Dockerfile -t wijohnst/wjt .
