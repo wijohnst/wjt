@@ -79,9 +79,9 @@
     "bundle-css": {
       "command": "esbuild --bundle apps/wjt/src/views/styles/main.css --outfile=apps/wjt/src/views/styles/min.css --minify"
     },
-    "package-blog-static": {
+    "generate-blog-posts": {
       "dependsOn": ["compile-scripts"],
-      "command": "node apps/wjt/scripts/create-static-posts.js"
+      "command": "node apps/wjt/scripts/generate-blog-posts.js"
     },
     "compile-scripts": {
       "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/source/*.ts --module commonjs"
