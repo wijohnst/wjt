@@ -1,3 +1,13 @@
+## 0.8.0 (2024-12-25)
+
+### 🚀 Features
+
+- **wjt-service:** refactors blog post generation to class implementation ([#54](https://github.com/wijohnst/wjt/pull/54))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.7.1 (2024-12-23)
 
 ### 🩹 Fixes
