@@ -33,5 +33,10 @@ describe('blog-post', () => {
     test('should return the rendered post', () => {
       expect(sut.postMarkup).toMatchSnapshot();
     });
+
+    test('should return an array of post images', () => {
+      expect(sut.postImages).toHaveLength(1);
+      expect(sut.postImages).toMatchSnapshot();
+    });
   });
 });

@@ -8,7 +8,8 @@ slug: post-1
 ---
 # Post 1
 
-This is the first post."
+This is the first post.
+![Image 1](/path/to/image-1.jpg)"
 `;
 
 exports[`getMockPostContent return value should match snapshots 2`] = `
@@ -19,7 +20,8 @@ slug: post-2
 ---
 # Post 2
 
-This is the second post."
+This is the second post.
+![CDN Image](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)"
 `;
 
 exports[`getMockPostContent return value should match snapshots 3`] = `

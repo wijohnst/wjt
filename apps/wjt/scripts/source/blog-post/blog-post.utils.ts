@@ -1,14 +1,16 @@
 import { renderFile } from 'pug';
-import { Parser, HtmlRenderer } from 'commonmark';
+import { Parser, HtmlRenderer, Node, NodeType } from 'commonmark';
 import { cwd } from 'process';
 import { join } from 'path';
 import { readFileSync, readdirSync } from 'fs';
 
-import { DefaultFrontMatter, RawPost, Post } from './blog-post';
+import { DefaultFrontMatter, RawPost, Post, PostImage } from './blog-post';
 export const frontmatterRegex = /---([\s\S]*?)---/g;
 export const frontmatterDelimiterRegex = /---/g;
 export const newlineRegex = /\n/g;
 export const styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
+export const defaultCDNMatcher =
+  /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 export const defaultFrontMatter: DefaultFrontMatter = {
   title: '',
   author: '',
@@ -128,7 +130,70 @@ export const getRawPostFileNames = (): string[] => {
   return readdirSync(postsPath).filter((file) => file.endsWith('.md'));
 };
 
+/**
+ * Returns the raw post content of a markdown file based on file name
+ * @param {string} rawPostFileName
+ * @returns {RawPost}
+ */
 export const getRawBlogPost = (rawPostFileName: string): RawPost => {
   const rawPostPath = join(postsPath, rawPostFileName);
   return readFileSync(rawPostPath, 'utf8');
+};
+
+/**
+ * Returns an array of image nodes from the post content
+ * @param {Post['content']} postContent
+ * @returns {Node[]} - Commonmark Parser Nodes
+ */
+export const getImageNodes = (postContent: Post['content']): Node[] => {
+  let imageNodesSet = new Set<Node>();
+  const parsedContent = new Parser().parse(postContent);
+  const walker = parsedContent.walker();
+
+  let event = walker.next();
+  while (event) {
+    const { node } = event;
+    if (node.type === 'image') {
+      imageNodesSet.add(node);
+    }
+    event = walker.next();
+  }
+
+  return Array.from(imageNodesSet);
+};
+
+/**
+ * Returns a PostImage object from a Commonmark Node
+ * @param {Node} imageNode
+ * @returns {PostImage}
+ */
+export const generatePostImage = (imageNode: Node): PostImage => {
+  const { destination } = imageNode;
+
+  if (!destination) {
+    throw new Error(
+      'generatePostImage: Image node does not have a destination.\n\n' +
+        JSON.stringify(imageNode, null, 2)
+    );
+  }
+
+  return {
+    originalSrc: destination,
+    altText: imageNode.firstChild?.literal || '',
+    imageNode,
+    cdnEndpoint: isCDNPath(destination) ? destination : undefined,
+  } as PostImage;
+};
+
+/**
+ * Checks if the path points to the CDN and not a local path
+ * @param {string} src - src path
+ * @param {RegExp} matcher
+ * @returns {boolean}
+ */
+export const isCDNPath = (
+  src: string,
+  matcher: RegExp = defaultCDNMatcher
+): boolean => {
+  return matcher.test(src);
 };

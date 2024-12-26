@@ -1,4 +1,10 @@
-import { parseRawPost, renderPost } from './blog-post.utils';
+import { Node } from 'commonmark';
+import {
+  parseRawPost,
+  renderPost,
+  getImageNodes,
+  generatePostImage,
+} from './blog-post.utils';
 
 export type DefaultFrontMatter = {
   title: string;
@@ -13,18 +19,38 @@ export type Post = {
   content: string;
 };
 
+export type PostImage = {
+  originalSrc: string;
+  altText: string;
+  imageNode: Node;
+  caption?: string;
+  cdnEndpoint?: string;
+};
+
 export interface IBlogPost {
   rawPost: RawPost;
   parsedPost: Post;
   postMarkup: string;
+  postImages?: PostImage[];
 }
 
 export class BlogPost implements IBlogPost {
   parsedPost: Post;
   postMarkup: string;
+  postImages?: PostImage[] | undefined;
+
+  private _imageNodes?: Node[] | undefined;
 
   constructor(public rawPost: RawPost) {
     this.parsedPost = parseRawPost(rawPost);
     this.postMarkup = renderPost(this.parsedPost);
+    this._imageNodes = getImageNodes(this.parsedPost.content);
+    this.initPostImages();
+  }
+
+  private initPostImages(): void {
+    this.postImages = this._imageNodes?.map((node: Node) => {
+      return generatePostImage(node);
+    });
   }
 }
