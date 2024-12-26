@@ -1,9 +1,11 @@
 import { Node } from 'commonmark';
+
 import {
   parseRawPost,
   renderPost,
   getImageNodes,
   generatePostImage,
+  listBucketContent,
 } from './blog-post.utils';
 
 export type DefaultFrontMatter = {
@@ -32,6 +34,7 @@ export interface IBlogPost {
   parsedPost: Post;
   postMarkup: string;
   postImages?: PostImage[];
+  listBucketContents(): Promise<void>;
 }
 
 export class BlogPost implements IBlogPost {
@@ -52,5 +55,9 @@ export class BlogPost implements IBlogPost {
     this.postImages = this._imageNodes?.map((node: Node) => {
       return generatePostImage(node);
     });
+  }
+
+  public async listBucketContents(): Promise<void> {
+    await listBucketContent();
   }
 }

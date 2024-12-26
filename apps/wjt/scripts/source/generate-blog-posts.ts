@@ -7,12 +7,13 @@ import {
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
-const init = () => {
+const init = async () => {
   console.log('Generating blog posts 📝...\n\n');
+  let bucketContents = [];
 
   const rawPostFileNames = getRawPostFileNames();
 
-  rawPostFileNames.forEach((rawPostFileName) => {
+  rawPostFileNames.forEach(async (rawPostFileName) => {
     const rawPost = getRawBlogPost(rawPostFileName);
     const blogPost = new BlogPost(rawPost);
     const targetPath = join(

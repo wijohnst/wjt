@@ -1,62 +1,48 @@
-'use strict';
-var __assign =
-  (this && this.__assign) ||
-  function () {
-    __assign =
-      Object.assign ||
-      function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-          s = arguments[i];
-          for (var p in s)
-            if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-      };
-    return __assign.apply(this, arguments);
-  };
-Object.defineProperty(exports, '__esModule', { value: true });
-exports.getRawBlogPost =
-  exports.getRawPostFileNames =
-  exports.getPath =
-  exports.renderPost =
-  exports.getFrontmatter =
-  exports.parseRawPost =
-  exports.postsPath =
-  exports.requiredFields =
-  exports.defaultFrontMatter =
-  exports.styleRegex =
-  exports.newlineRegex =
-  exports.frontmatterDelimiterRegex =
-  exports.frontmatterRegex =
-    void 0;
-var pug_1 = require('pug');
-var commonmark_1 = require('commonmark');
-var process_1 = require('process');
-var path_1 = require('path');
-var fs_1 = require('fs');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isCDNPath = exports.generatePostImage = exports.getImageNodes = exports.getRawBlogPost = exports.getRawPostFileNames = exports.getPath = exports.renderPost = exports.getFrontmatter = exports.parseRawPost = exports.listBucketContent = exports.postsPath = exports.requiredFields = exports.defaultFrontMatter = exports.defaultCDNMatcher = exports.styleRegex = exports.newlineRegex = exports.frontmatterDelimiterRegex = exports.frontmatterRegex = void 0;
+const pug_1 = require("pug");
+const commonmark_1 = require("commonmark");
+const process_1 = require("process");
+const path_1 = require("path");
+const fs_1 = require("fs");
+const wjt_spaces_client_1 = require("../wjt-spaces-client/wjt-spaces-client");
 exports.frontmatterRegex = /---([\s\S]*?)---/g;
 exports.frontmatterDelimiterRegex = /---/g;
 exports.newlineRegex = /\n/g;
 exports.styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
+exports.defaultCDNMatcher = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 exports.defaultFrontMatter = {
-  title: '',
-  author: '',
-  slug: '',
+    title: '',
+    author: '',
+    slug: '',
 };
 exports.requiredFields = Object.keys(exports.defaultFrontMatter);
-exports.postsPath = process.env.POSTS_PATH || 'src/posts';
+exports.postsPath = process.env.NODE_ENV === 'test'
+    ? 'src/posts'
+    : process.env.POSTS_PATH || 'src/posts';
+const wjtSpacesClient = (0, wjt_spaces_client_1.wjtSpaceClientFactory)({
+    forcePathStyle: false,
+    endpoint: process.env.WJT_SPACES_ENDPOINT || wjt_spaces_client_1.WJT_SPACES_ENDPOINT,
+    region: process.env.WJT_SPACES_REGION || wjt_spaces_client_1.WJT_SPACES_REGION,
+    credentials: {
+        accessKeyId: process.env.WJT_SPACES_CLIENT_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET || '',
+    },
+});
+const listBucketContent = async () => {
+    return await wjtSpacesClient.getBucketContents();
+};
+exports.listBucketContent = listBucketContent;
 /**
  * Returns an array of parsed post objects
  * @returns {Post[]}
  */
-var parseRawPost = function (rawPost) {
-  return {
-    frontMatter: (0, exports.getFrontmatter)(rawPost),
-    content:
-      rawPost === null || rawPost === void 0
-        ? void 0
-        : rawPost.replace(exports.frontmatterRegex, '').trim(),
-  };
+const parseRawPost = (rawPost) => {
+    return {
+        frontMatter: (0, exports.getFrontmatter)(rawPost),
+        content: rawPost?.replace(exports.frontmatterRegex, '').trim(),
+    };
 };
 exports.parseRawPost = parseRawPost;
 /**
@@ -64,36 +50,30 @@ exports.parseRawPost = parseRawPost;
  * @param {RawPost }rawPost
  * @returns {DefaultFrontMatter}
  */
-var getFrontmatter = function (rawPost) {
-  var _a;
-  var rawFrontmatter =
-    (_a = rawPost.match(exports.frontmatterRegex)) === null || _a === void 0
-      ? void 0
-      : _a[0].replace(exports.frontmatterDelimiterRegex, '').trim();
-  if (!rawFrontmatter) {
-    throw new Error('Frontmatter is missing in the post: '.concat(rawPost));
-  }
-  var parsedFrontmatter = rawFrontmatter
-    .split(exports.newlineRegex)
-    .reduce(function (acc, line) {
-      var _a;
-      var _b = line.split(':').map(function (str) {
-          return str.trim();
-        }),
-        key = _b[0],
-        value = _b[1];
-      return __assign(__assign({}, acc), ((_a = {}), (_a[key] = value), _a));
-    }, exports.defaultFrontMatter);
-  exports.requiredFields.forEach(function (field) {
-    if (!parsedFrontmatter[field]) {
-      throw new Error(
-        'Missing required frontmatter field: '
-          .concat(field, ' in post: ')
-          .concat(rawPost)
-      );
+const getFrontmatter = (rawPost) => {
+    const rawFrontmatter = rawPost
+        .match(exports.frontmatterRegex)?.[0]
+        // Removes the frontmatter delimiter from the frontmatter string
+        .replace(exports.frontmatterDelimiterRegex, '')
+        .trim();
+    if (!rawFrontmatter) {
+        throw new Error(`Frontmatter is missing in the post: ${rawPost}`);
     }
-  });
-  return parsedFrontmatter;
+    const parsedFrontmatter = rawFrontmatter
+        .split(exports.newlineRegex)
+        .reduce((acc, line) => {
+        const [key, value] = line.split(':').map((str) => str.trim());
+        return {
+            ...acc,
+            [key]: value,
+        };
+    }, exports.defaultFrontMatter);
+    exports.requiredFields.forEach((field) => {
+        if (!parsedFrontmatter[field]) {
+            throw new Error(`Missing required frontmatter field: ${field} in post: ${rawPost}`);
+        }
+    });
+    return parsedFrontmatter;
 };
 exports.getFrontmatter = getFrontmatter;
 /**
@@ -101,29 +81,19 @@ exports.getFrontmatter = getFrontmatter;
  * @param {Post} post
  * @returns {string} The rendered post
  */
-var renderPost = function (post) {
-  var frontMatter = post.frontMatter,
-    content = post.content;
-  var headTemplate = (0, pug_1.renderFile)(
-    (0, exports.getPath)('src/views/templates/head.pug'),
-    {
-      title: frontMatter.title.trim(),
-    }
-  ).replace(exports.styleRegex, '');
-  var parsedContent = new commonmark_1.Parser().parse(content);
-  var writer = new commonmark_1.HtmlRenderer();
-  var html = writer.render(parsedContent);
-  var withWrapper = '<div class="post">'.concat(html, '</div>');
-  var openTag = '<html>';
-  var closeTag = '</html>';
-  var finalRender = ''.concat(
-    openTag,
-    headTemplate,
-    styleTemplate,
-    withWrapper,
-    closeTag
-  );
-  return finalRender;
+const renderPost = (post) => {
+    const { frontMatter, content } = post;
+    const headTemplate = (0, pug_1.renderFile)((0, exports.getPath)('src/views/templates/head.pug'), {
+        title: frontMatter.title.trim(),
+    }).replace(exports.styleRegex, '');
+    const parsedContent = new commonmark_1.Parser().parse(content);
+    const writer = new commonmark_1.HtmlRenderer();
+    const html = writer.render(parsedContent);
+    const withWrapper = `<div class="post">${html}</div>`;
+    const openTag = '<html>';
+    const closeTag = '</html>';
+    const finalRender = ``.concat(openTag, headTemplate, styleTemplate, withWrapper, closeTag);
+    return finalRender;
 };
 exports.renderPost = renderPost;
 /**
@@ -131,36 +101,83 @@ exports.renderPost = renderPost;
  * @param {string} subpath
  * @returns {string}
  */
-var getPath = function (subpath) {
-  if (process.env.NODE_ENV === 'test') {
-    return subpath;
-  }
-  return (0, path_1.join)((0, process_1.cwd)(), 'apps/wjt/'.concat(subpath));
+const getPath = (subpath) => {
+    if (process.env.NODE_ENV === 'test') {
+        return subpath;
+    }
+    return (0, path_1.join)((0, process_1.cwd)(), `apps/wjt/${subpath}`);
 };
 exports.getPath = getPath;
 /**
  * Returns the minified default stylesheet for the application
  * @returns {string} The contents of the minified stylesheet
  */
-var getStylesheet = function () {
-  return (0, fs_1.readFileSync)(
-    (0, exports.getPath)('src/views/styles/min.css'),
-    'utf-8'
-  );
-};
-var styleTemplate = '<style>'.concat(getStylesheet(), '</style>');
+const getStylesheet = () => (0, fs_1.readFileSync)((0, exports.getPath)('src/views/styles/min.css'), 'utf-8');
+const styleTemplate = `<style>${getStylesheet()}</style>`;
 /**
  * Returns the markdown file names in the posts directory
  * @returns {string[]}
  */
-var getRawPostFileNames = function () {
-  return (0, fs_1.readdirSync)(exports.postsPath).filter(function (file) {
-    return file.endsWith('.md');
-  });
+const getRawPostFileNames = () => {
+    return (0, fs_1.readdirSync)(exports.postsPath).filter((file) => file.endsWith('.md'));
 };
 exports.getRawPostFileNames = getRawPostFileNames;
-var getRawBlogPost = function (rawPostFileName) {
-  var rawPostPath = (0, path_1.join)(exports.postsPath, rawPostFileName);
-  return (0, fs_1.readFileSync)(rawPostPath, 'utf8');
+/**
+ * Returns the raw post content of a markdown file based on file name
+ * @param {string} rawPostFileName
+ * @returns {RawPost}
+ */
+const getRawBlogPost = (rawPostFileName) => {
+    const rawPostPath = (0, path_1.join)(exports.postsPath, rawPostFileName);
+    return (0, fs_1.readFileSync)(rawPostPath, 'utf8');
 };
 exports.getRawBlogPost = getRawBlogPost;
+/**
+ * Returns an array of image nodes from the post content
+ * @param {Post['content']} postContent
+ * @returns {Node[]} - Commonmark Parser Nodes
+ */
+const getImageNodes = (postContent) => {
+    let imageNodesSet = new Set();
+    const parsedContent = new commonmark_1.Parser().parse(postContent);
+    const walker = parsedContent.walker();
+    let event = walker.next();
+    while (event) {
+        const { node } = event;
+        if (node.type === 'image') {
+            imageNodesSet.add(node);
+        }
+        event = walker.next();
+    }
+    return Array.from(imageNodesSet);
+};
+exports.getImageNodes = getImageNodes;
+/**
+ * Returns a PostImage object from a Commonmark Node
+ * @param {Node} imageNode
+ * @returns {PostImage}
+ */
+const generatePostImage = (imageNode) => {
+    const { destination } = imageNode;
+    if (!destination) {
+        throw new Error('generatePostImage: Image node does not have a destination.\n\n' +
+            JSON.stringify(imageNode, null, 2));
+    }
+    return {
+        originalSrc: destination,
+        altText: imageNode.firstChild?.literal || '',
+        imageNode,
+        cdnEndpoint: (0, exports.isCDNPath)(destination) ? destination : undefined,
+    };
+};
+exports.generatePostImage = generatePostImage;
+/**
+ * Checks if the path points to the CDN and not a local path
+ * @param {string} src - src path
+ * @param {RegExp} matcher
+ * @returns {boolean}
+ */
+const isCDNPath = (src, matcher = exports.defaultCDNMatcher) => {
+    return matcher.test(src);
+};
+exports.isCDNPath = isCDNPath;

@@ -1,8 +1,14 @@
 import { renderFile } from 'pug';
-import { Parser, HtmlRenderer, Node, NodeType } from 'commonmark';
+import { Parser, HtmlRenderer, Node } from 'commonmark';
 import { cwd } from 'process';
 import { join } from 'path';
 import { readFileSync, readdirSync } from 'fs';
+
+import {
+  wjtSpaceClientFactory,
+  WJT_SPACES_ENDPOINT,
+  WJT_SPACES_REGION,
+} from '../wjt-spaces-client/wjt-spaces-client';
 
 import { DefaultFrontMatter, RawPost, Post, PostImage } from './blog-post';
 export const frontmatterRegex = /---([\s\S]*?)---/g;
@@ -21,6 +27,20 @@ export const postsPath =
   process.env.NODE_ENV === 'test'
     ? 'src/posts'
     : process.env.POSTS_PATH || 'src/posts';
+
+const wjtSpacesClient = wjtSpaceClientFactory({
+  forcePathStyle: false,
+  endpoint: process.env.WJT_SPACES_ENDPOINT || WJT_SPACES_ENDPOINT,
+  region: process.env.WJT_SPACES_REGION || WJT_SPACES_REGION,
+  credentials: {
+    accessKeyId: process.env.WJT_SPACES_CLIENT_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET || '',
+  },
+});
+
+export const listBucketContent = async () => {
+  return await wjtSpacesClient.getBucketContents();
+};
 
 /**
  * Returns an array of parsed post objects

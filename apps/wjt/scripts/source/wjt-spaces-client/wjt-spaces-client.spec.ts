@@ -25,12 +25,23 @@ describe('WjtSpacesClient', () => {
   describe('getBucketContents', () => {
     test('should return the bucket contents', async () => {
       const sut: WjtSpacesClient = new WjtSpacesClient({
-        send: jest.fn().mockResolvedValue({} as ListObjectsV2CommandOutput),
+        send: jest.fn().mockResolvedValue({
+          Contents: [
+            {
+              Key: 'image-1.jpg',
+              LastModified: new Date('2024-12-25'),
+              ETag: 'etag',
+              Size: 123,
+              StorageClass: 'STANDARD',
+            },
+          ],
+        } as ListObjectsV2CommandOutput),
       } as unknown as S3Client);
 
       const response = await sut.getBucketContents();
 
       expect(response).toBeDefined();
+      expect(response).toMatchSnapshot();
     });
   });
 });

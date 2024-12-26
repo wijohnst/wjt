@@ -84,7 +84,7 @@
       "command": "node apps/wjt/scripts/generate-blog-posts.js"
     },
     "compile-scripts": {
-      "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/source/*.ts --module commonjs"
+      "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/source/*.ts --module nodenext --target es2020"
     }
   }
 }
