@@ -88,7 +88,11 @@
       "options": {
         "tsConfig": "apps/wjt/tsconfig.scripts.json",
         "main": "apps/wjt/src/scripts/generate-blog-posts.ts",
-        "outputPath": "apps/wjt/build"
+        "outputPath": "apps/wjt/build",
+        "bundle": true,
+        "format": ["cjs"],
+        "target": "es2020",
+        "sourceMap": false
       }
     }
   }
