@@ -135,17 +135,11 @@ var rawContentMocks = [
   getMockPostContent(rawPosts[2].slice(4))
 ];
 
-// libs/images/src/lib/images.ts
-function sayHello() {
-  console.log("Hello!");
-}
-
 // apps/wjt/src/scripts/generate-blog-posts.ts
 var import_fs2 = require("fs");
 var import_path2 = require("path");
 var init = () => {
   console.log("Generating blog posts \u{1F4DD}...\n\n");
-  sayHello();
   const rawPostFileNames = getRawPostFileNames();
   rawPostFileNames.forEach((rawPostFileName) => {
     const rawPost = getRawBlogPost(rawPostFileName);
