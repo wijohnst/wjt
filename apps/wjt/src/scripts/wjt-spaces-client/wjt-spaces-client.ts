@@ -6,8 +6,8 @@ import {
 } from '@aws-sdk/client-s3';
 
 export const WJT_SPACES_BUCKET_ID = `wjt`;
-export const WJT_SPACES_ORIGIN_ENDPOINT = `https://wjt.sfo2.cdn.digitaloceanspaces.com`;
-export const WJT_SPACES_CDN_ENDPOINT = `https://cdn.wjt.com`;
+export const WJT_SPACES_ORIGIN_ENDPOINT = `https://wjt.sfo2.digitaloceanspaces.com`;
+export const WJT_SPACES_CDN_ENDPOINT = `https://wjt.sfo2.cdn.digitaloceanspaces.com`;
 export const WJT_SPACES_ENDPOINT = `https://sfo2.digitaloceanspaces.com`;
 export const WJT_SPACES_REGION = `sfo2`;
 
@@ -19,7 +19,23 @@ export interface IWjtSpacesClient {
   getBucketContents(): Promise<unknown>;
 }
 
-export type WjtSpacesClientConfig = S3ClientConfig & {};
+export type WjtSpacesClientConfig = S3ClientConfig & {
+  region: string;
+  endpoint: string;
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+};
+
+export const wjtSpacesClientDefaultConfig: WjtSpacesClientConfig = {
+  region: WJT_SPACES_REGION,
+  endpoint: WJT_SPACES_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.WJT_SPACES_CLIENT_ACCESS_KEY_ID ?? '',
+    secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET ?? '',
+  },
+};
 export class WjtSpacesClient {
   constructor(
     private s3Client: S3Client,
@@ -35,9 +51,13 @@ export class WjtSpacesClient {
       Bucket: this.bucketId,
     };
     const command = new ListObjectsV2Command(params);
-    const response = await this.s3Client.send(command);
 
-    return response;
+    try {
+      const { Contents } = await this.s3Client.send(command);
+      return Contents;
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 

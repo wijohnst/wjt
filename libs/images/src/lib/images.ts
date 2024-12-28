@@ -1,1 +1,3 @@
-export const foo = 'bar';
+export const isCdnImage = (path: string, matcher: RegExp) => {
+  return matcher.test(path);
+};

@@ -4,10 +4,51 @@ var import_commonmark = require("commonmark");
 var import_process = require("process");
 var import_path = require("path");
 var import_fs = require("fs");
+
+// apps/wjt/src/scripts/wjt-spaces-client/wjt-spaces-client.ts
+var import_client_s3 = require("@aws-sdk/client-s3");
+var WJT_SPACES_BUCKET_ID = `wjt`;
+var WJT_SPACES_ENDPOINT = `https://sfo2.digitaloceanspaces.com`;
+var WJT_SPACES_REGION = `sfo2`;
+var wjtSpacesClientDefaultConfig = {
+  region: WJT_SPACES_REGION,
+  endpoint: WJT_SPACES_ENDPOINT,
+  credentials: {
+    accessKeyId: process.env.WJT_SPACES_CLIENT_ACCESS_KEY_ID ?? "",
+    secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET ?? ""
+  }
+};
+var WjtSpacesClient = class {
+  constructor(s3Client, bucketId = WJT_SPACES_BUCKET_ID) {
+    this.s3Client = s3Client;
+    this.bucketId = bucketId;
+  }
+  getBucketId() {
+    return this.bucketId;
+  }
+  async getBucketContents() {
+    const params = {
+      Bucket: this.bucketId
+    };
+    const command = new import_client_s3.ListObjectsV2Command(params);
+    try {
+      const { Contents } = await this.s3Client.send(command);
+      return Contents;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
+var wjtSpacesClientFactory = (config) => {
+  return new WjtSpacesClient(new import_client_s3.S3Client(config));
+};
+
+// apps/wjt/src/scripts/blog-post/blog-post.utils.ts
 var frontmatterRegex = /---([\s\S]*?)---/g;
 var frontmatterDelimiterRegex = /---/g;
 var newlineRegex = /\n/g;
 var styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
+var defaultCDNMatcher = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 var defaultFrontMatter = {
   title: "",
   author: "",
@@ -15,6 +56,18 @@ var defaultFrontMatter = {
 };
 var requiredFields = Object.keys(defaultFrontMatter);
 var postsPath = process.env.NODE_ENV === "test" ? "src/posts" : process.env.POSTS_PATH || "src/posts";
+var wjtSpacesClient = wjtSpacesClientFactory({
+  forcePathStyle: false,
+  endpoint: process.env.WJT_SPACES_ENDPOINT || WJT_SPACES_ENDPOINT,
+  region: process.env.WJT_SPACES_REGION || WJT_SPACES_REGION,
+  credentials: {
+    accessKeyId: process.env.WJT_SPACES_CLIENT_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET || ""
+  }
+});
+var listBucketContent = async () => {
+  return await wjtSpacesClient.getBucketContents();
+};
 var parseRawPost = (rawPost) => {
   return {
     frontMatter: getFrontmatter(rawPost),
@@ -77,6 +130,37 @@ var getRawBlogPost = (rawPostFileName) => {
   const rawPostPath = (0, import_path.join)(postsPath, rawPostFileName);
   return (0, import_fs.readFileSync)(rawPostPath, "utf8");
 };
+var getImageNodes = (postContent) => {
+  let imageNodesSet = /* @__PURE__ */ new Set();
+  const parsedContent = new import_commonmark.Parser().parse(postContent);
+  const walker = parsedContent.walker();
+  let event = walker.next();
+  while (event) {
+    const { node } = event;
+    if (node.type === "image") {
+      imageNodesSet.add(node);
+    }
+    event = walker.next();
+  }
+  return Array.from(imageNodesSet);
+};
+var generatePostImage = (imageNode) => {
+  const { destination } = imageNode;
+  if (!destination) {
+    throw new Error(
+      "generatePostImage: Image node does not have a destination.\n\n" + JSON.stringify(imageNode, null, 2)
+    );
+  }
+  return {
+    originalSrc: destination,
+    altText: imageNode.firstChild?.literal || "",
+    imageNode,
+    cdnEndpoint: isCDNPath(destination) ? destination : void 0
+  };
+};
+var isCDNPath = (src, matcher = defaultCDNMatcher) => {
+  return matcher.test(src);
+};
 
 // apps/wjt/src/scripts/blog-post/blog-post.ts
 var BlogPost = class {
@@ -84,6 +168,16 @@ var BlogPost = class {
     this.rawPost = rawPost;
     this.parsedPost = parseRawPost(rawPost);
     this.postMarkup = renderPost(this.parsedPost);
+    this._imageNodes = getImageNodes(this.parsedPost.content);
+    this.initPostImages();
+  }
+  initPostImages() {
+    this.postImages = this._imageNodes?.map((node) => {
+      return generatePostImage(node);
+    });
+  }
+  async listBucketContents() {
+    await listBucketContent();
   }
 };
 
@@ -96,7 +190,8 @@ var rawPosts = [
     "slug: post-1",
     "---",
     "# Post 1\n",
-    "This is the first post."
+    "This is the first post.",
+    "![Image 1](/path/to/image-1.jpg)"
   ],
   [
     "---",
@@ -105,7 +200,8 @@ var rawPosts = [
     "slug: post-2",
     "---",
     "# Post 2\n",
-    "This is the second post."
+    "This is the second post.",
+    "![CDN Image](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)"
   ],
   [
     "---",
@@ -138,10 +234,13 @@ var rawContentMocks = [
 // apps/wjt/src/scripts/generate-blog-posts.ts
 var import_fs2 = require("fs");
 var import_path2 = require("path");
-var init = () => {
+var wjtSpacesClient2 = wjtSpacesClientFactory(wjtSpacesClientDefaultConfig);
+var init = async () => {
   console.log("Generating blog posts \u{1F4DD}...\n\n");
   const rawPostFileNames = getRawPostFileNames();
-  rawPostFileNames.forEach((rawPostFileName) => {
+  const bucketContents = await wjtSpacesClient2.getBucketContents();
+  console.log("Bucket Contents:", bucketContents);
+  rawPostFileNames.forEach(async (rawPostFileName) => {
     const rawPost = getRawBlogPost(rawPostFileName);
     const blogPost = new BlogPost(rawPost);
     const targetPath = (0, import_path2.join)(
