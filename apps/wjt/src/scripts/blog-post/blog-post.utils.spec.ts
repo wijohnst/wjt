@@ -6,13 +6,13 @@ import {
   renderPost,
   getRawBlogPost,
   getRawPostFileNames,
-} from '../blog-post.utils';
+} from './blog-post.utils';
 
 import {
   getMockFrontmatter,
   rawPostMocks,
   rawContentMocks,
-} from '../blog-post.mocks';
+} from './blog-post.mocks';
 
 describe('blog-post.utils', () => {
   test('should be defined', () => {

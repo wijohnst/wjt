@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Send to the build directory in the application, not dist. This is done so that we can access the build scripts in the application before running the final build.
+    "outDir": "./build",
+    "module": "commonjs",
+    "types": ["node"]
+  },
+  // Only want to include the final scripts that will be run via project.json
+  "include": ["src/scripts/*.ts"],
+  // Exclude test and snapshot files
+  "exclude": ["src/scripts/**/*.spec.ts.*"]
+}
