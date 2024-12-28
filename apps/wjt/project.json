@@ -81,10 +81,10 @@
     },
     "generate-blog-posts": {
       "dependsOn": ["compile-scripts"],
-      "command": "node apps/wjt/scripts/generate-blog-posts.js"
+      "command": "node apps/wjt/build/generate-blog-posts.cjs"
     },
     "compile-scripts": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/esbuild:esbuild",
       "options": {
         "tsConfig": "apps/wjt/tsconfig.scripts.json",
         "main": "apps/wjt/src/scripts/generate-blog-posts.ts",
@@ -92,7 +92,8 @@
         "bundle": true,
         "format": ["cjs"],
         "target": "es2020",
-        "sourceMap": false
+        "sourceMap": false,
+        "generatePackageJson": false
       }
     }
   }
