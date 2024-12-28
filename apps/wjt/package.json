@@ -1,5 +1,5 @@
 {
-  "name": "wjt-service",
+  "name": "@wjt/service",
   "version": "0.8.0",
   "imports": {
     "#package": "./package.json"
