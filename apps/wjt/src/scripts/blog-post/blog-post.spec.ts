@@ -4,7 +4,7 @@ import {
   rawPostMocks,
   rawContentMocks,
   getMockFrontmatter,
-} from '../blog-post.mocks';
+} from './blog-post.mocks';
 
 describe('blog-post', () => {
   describe('BlogPost', () => {

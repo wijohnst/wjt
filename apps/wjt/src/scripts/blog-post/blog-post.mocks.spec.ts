@@ -1,4 +1,4 @@
-import { getMockPostContent, rawPosts } from '../blog-post.mocks';
+import { getMockPostContent, rawPosts } from './blog-post.mocks';
 
 describe('getMockPostContent', () => {
   test('should be defined', () => {

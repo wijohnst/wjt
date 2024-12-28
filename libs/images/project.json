@@ -1,0 +1,21 @@
+{
+  "name": "images",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/images/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/images",
+        "main": "libs/images/src/index.ts",
+        "tsConfig": "libs/images/tsconfig.lib.json",
+        "format": ["cjs"],
+        "assets": ["libs/images/*.md"],
+        "generatePackageJson": true
+      }
+    }
+  }
+}

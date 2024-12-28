@@ -6,17 +6,13 @@ import {
   renderPost,
   getRawBlogPost,
   getRawPostFileNames,
-  getImageNodes,
-  generatePostImage,
-  isCDNPath,
-} from '../blog-post.utils';
+} from './blog-post.utils';
 
 import {
   getMockFrontmatter,
   rawPostMocks,
   rawContentMocks,
-} from '../blog-post.mocks';
-import { Node } from 'commonmark';
+} from './blog-post.mocks';
 
 describe('blog-post.utils', () => {
   test('should be defined', () => {
@@ -149,76 +145,5 @@ describe('generate-blog-posts', () => {
 
       expect(rawPost).toEqual(rawPostMocks[0]);
     });
-  });
-
-  describe('getImageNodes', () => {
-    test('should be defined', () => {
-      expect(getImageNodes).toBeDefined();
-    });
-
-    test('should return the correct image nodes - local path', () => {
-      const postImages = getImageNodes(rawContentMocks[0]);
-
-      expect(postImages).toMatchSnapshot();
-      expect(postImages).toHaveLength(1);
-    });
-
-    test('should return the correct image nodes - CDN path', () => {
-      const postImages = getImageNodes(rawContentMocks[1]);
-
-      expect(postImages).toMatchSnapshot();
-      expect(postImages).toHaveLength(1);
-    });
-  });
-});
-
-describe('isCDNPath', () => {
-  test('should be defined', () => {
-    expect(isCDNPath).toBeDefined();
-  });
-
-  test('should be true for a CDN path', () => {
-    const [image] = getImageNodes(rawContentMocks[1]);
-    const postImage = generatePostImage(image);
-
-    expect(isCDNPath(postImage.originalSrc)).toBe(true);
-  });
-
-  test('should be false for a non-CDN path', () => {
-    const [image] = getImageNodes(rawContentMocks[0]);
-    const postImage = generatePostImage(image);
-
-    expect(isCDNPath(postImage.originalSrc)).toBe(false);
-  });
-});
-
-describe('generatePostImage', () => {
-  test('should be defined', () => {
-    expect(generatePostImage).toBeDefined();
-  });
-
-  test('should return the correct PostImage object with local src path', () => {
-    const [imageNode] = getImageNodes(rawContentMocks[0]);
-    const postImage = generatePostImage(imageNode);
-
-    expect(postImage.originalSrc).toEqual('/path/to/image-1.jpg');
-    expect(postImage.altText).toEqual('Image 1');
-    expect(postImage.cdnEndpoint).toBeUndefined();
-  });
-
-  test('should return the correct PostImage object with CDN endpoint path', () => {
-    const [imageNode] = getImageNodes(rawContentMocks[1]);
-    const postImage = generatePostImage(imageNode);
-
-    expect(postImage.originalSrc).toEqual(
-      'https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico'
-    );
-    expect(postImage.cdnEndpoint).toEqual(
-      'https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico'
-    );
-  });
-
-  test('should throw if image node has no destination', () => {
-    expect(() => generatePostImage({} as unknown as Node)).toThrow();
   });
 });
