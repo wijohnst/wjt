@@ -1,9 +1,4 @@
-import {
-  BlogPost,
-  getRawBlogPost,
-  getRawPostFileNames,
-  postsPath,
-} from './blog-post';
+import { BlogPost, getRawBlogPost, getRawPostFileNames, postsPath } from '.';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
