@@ -84,7 +84,10 @@
       "command": "node apps/wjt/scripts/generate-blog-posts.js"
     },
     "compile-scripts": {
-      "command": "tsc --outDir apps/wjt/scripts apps/wjt/scripts/source/*.ts --module commonjs"
+      "executor": "@nx/js:tsc",
+      "options": {
+        "tsConfig": "apps/wjt/tsconfig.scripts.json"
+      }
     }
   }
 }
