@@ -9,5 +9,8 @@
   // Only want to include the final scripts that will be run via project.json
   "include": ["src/scripts/*.ts"],
   // Exclude test and snapshot files
-  "exclude": ["src/scripts/**/*.spec.ts.*"]
+  "exclude": [
+    "src/scripts/**/*.spec.ts.*",
+    "src/scripts/blog-post/blog-post.mocks.ts"
+  ]
 }
