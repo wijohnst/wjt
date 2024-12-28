@@ -5,10 +5,10 @@ import { join } from 'path';
 import { readFileSync, readdirSync } from 'fs';
 
 import {
-  wjtSpaceClientFactory,
+  wjtSpacesClientFactory,
   WJT_SPACES_ENDPOINT,
   WJT_SPACES_REGION,
-} from '../wjt-spaces-client/wjt-spaces-client';
+} from '../wjt-spaces-client';
 
 import { DefaultFrontMatter, RawPost, Post, PostImage } from './blog-post';
 export const frontmatterRegex = /---([\s\S]*?)---/g;
@@ -28,7 +28,7 @@ export const postsPath =
     ? 'src/posts'
     : process.env.POSTS_PATH || 'src/posts';
 
-const wjtSpacesClient = wjtSpaceClientFactory({
+const wjtSpacesClient = wjtSpacesClientFactory({
   forcePathStyle: false,
   endpoint: process.env.WJT_SPACES_ENDPOINT || WJT_SPACES_ENDPOINT,
   region: process.env.WJT_SPACES_REGION || WJT_SPACES_REGION,
