@@ -25,7 +25,15 @@ describe('WjtSpacesClient', () => {
   describe('getBucketContents', () => {
     test('should return the bucket contents', async () => {
       const sut: WjtSpacesClient = new WjtSpacesClient({
-        send: jest.fn().mockResolvedValue({} as ListObjectsV2CommandOutput),
+        send: jest.fn().mockResolvedValue({
+          Contents: {
+            Key: 'test-key',
+            Size: 123,
+            LastModified: new Date(),
+            ETag: 'test-etag',
+            StorageClass: 'test-class',
+          } as unknown as ListObjectsV2CommandOutput['Contents'],
+        } as ListObjectsV2CommandOutput),
       } as unknown as S3Client);
 
       const response = await sut.getBucketContents();

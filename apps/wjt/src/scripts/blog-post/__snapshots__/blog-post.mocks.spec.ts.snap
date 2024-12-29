@@ -9,7 +9,7 @@ slug: post-1
 # Post 1
 
 This is the first post.
-![Image 1](/path/to/image-1.jpg)"
+![Image 1](./path/to/image-1.jpg)"
 `;
 
 exports[`getMockPostContent return value should match snapshots 2`] = `

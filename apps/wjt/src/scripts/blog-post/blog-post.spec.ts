@@ -1,9 +1,10 @@
-import { BlogPost } from '../blog-post';
+import { BlogPost, getImageNodes } from '../blog-post';
 
 import {
   rawPostMocks,
   rawContentMocks,
   getMockFrontmatter,
+  rawFrontmatterMocks,
 } from './blog-post.mocks';
 
 describe('blog-post', () => {
@@ -13,30 +14,44 @@ describe('blog-post', () => {
     });
   });
 
-  describe('parsePost - util', () => {
-    let sut: BlogPost;
+  let sut: BlogPost;
 
-    beforeEach(() => {
-      sut = new BlogPost(rawPostMocks[0]);
+  beforeEach(() => {
+    sut = new BlogPost(rawPostMocks[0]);
+  });
+
+  test('should return a parsed post object', () => {
+    const frontMatter = getMockFrontmatter('Post 1', 'Some Author', 'post-1');
+    const content = rawContentMocks[0];
+
+    expect(sut.parsedPost).toStrictEqual({
+      frontMatter,
+      content,
     });
+  });
 
-    test('should return a parsed post object', () => {
-      const frontMatter = getMockFrontmatter('Post 1', 'Some Author', 'post-1');
-      const content = rawContentMocks[0];
+  test('should return the rendered post', () => {
+    expect(sut.postMarkup).toMatchSnapshot();
+  });
 
-      expect(sut.parsedPost).toStrictEqual({
-        frontMatter,
-        content,
-      });
-    });
+  test('should return an array of post images', () => {
+    expect(sut.postImages).toHaveLength(1);
+    expect(sut.postImages).toMatchSnapshot();
+  });
 
-    test('should return the rendered post', () => {
-      expect(sut.postMarkup).toMatchSnapshot();
-    });
+  test('should update image sources', () => {
+    sut.updateImageSources([
+      {
+        originalSrc: './path/to/image-1.jpg',
+        newSrc: 'https://example.com/path/to/image-1.jpg',
+      },
+    ]);
 
-    test('should return an array of post images', () => {
-      expect(sut.postImages).toHaveLength(1);
-      expect(sut.postImages).toMatchSnapshot();
-    });
+    const imageNodes = getImageNodes(sut.parsedPost.content);
+
+    expect(imageNodes[0].destination).toBe(
+      'https://example.com/path/to/image-1.jpg'
+    );
+    expect(sut.postMarkup).toMatchSnapshot();
   });
 });

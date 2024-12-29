@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`blog-post parsePost - util should return an array of post images 1`] = `
+exports[`blog-post should return an array of post images 1`] = `
 [
   {
     "altText": "Image 1",
     "cdnEndpoint": undefined,
     "imageNode": Node {
-      "_destination": "/path/to/image-1.jpg",
+      "_destination": "./path/to/image-1.jpg",
       "_fenceChar": null,
       "_fenceLength": 0,
       "_fenceOffset": null,
@@ -225,7 +225,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
             ],
             [
               4,
-              32,
+              33,
             ],
           ],
           "_string_content": null,
@@ -317,7 +317,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
               ],
               [
                 4,
-                32,
+                33,
               ],
             ],
             "_string_content": null,
@@ -346,7 +346,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
           ],
           [
             4,
-            32,
+            33,
           ],
         ],
         "_string_content": null,
@@ -507,7 +507,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
               ],
               [
                 4,
-                32,
+                33,
               ],
             ],
             "_string_content": null,
@@ -599,7 +599,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
                 ],
                 [
                   4,
-                  32,
+                  33,
                 ],
               ],
               "_string_content": null,
@@ -628,7 +628,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
             ],
             [
               4,
-              32,
+              33,
             ],
           ],
           "_string_content": null,
@@ -767,7 +767,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
                 ],
                 [
                   4,
-                  32,
+                  33,
                 ],
               ],
               "_string_content": null,
@@ -859,7 +859,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
                   ],
                   [
                     4,
-                    32,
+                    33,
                   ],
                 ],
                 "_string_content": null,
@@ -888,7 +888,7 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
               ],
               [
                 4,
-                32,
+                33,
               ],
             ],
             "_string_content": null,
@@ -911,15 +911,23 @@ exports[`blog-post parsePost - util should return an array of post images 1`] = 
       "_title": "",
       "_type": "image",
     },
-    "originalSrc": "/path/to/image-1.jpg",
+    "originalSrc": "./path/to/image-1.jpg",
   },
 ]
 `;
 
-exports[`blog-post parsePost - util should return the rendered post 1`] = `
+exports[`blog-post should return the rendered post 1`] = `
 "<html><head> <title>Post 1 </title><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="icon" href="https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico"/></head><style>*,*:before,*:after{box-sizing:border-box}*{margin:0}body{line-height:1.5;-webkit-font-smoothing:antialiased}img,picture,video,canvas,svg{display:block;max-width:100%}input,button,textarea,select{font:inherit}p,h1,h2,h3,h4,h5,h6{overflow-wrap:break-word}p{text-wrap:pretty}h1,h2,h3,h4,h5,h6{text-wrap:balance}#root,#__next{isolation:isolate}html{padding:1rem;font-family:Roboto,sans-serif}.post{height:100%;border:solid thin black;padding:1rem}
 </style><div class="post"><h1>Post 1</h1>
 <p>This is the first post.
-<img src="/path/to/image-1.jpg" alt="Image 1" /></p>
+<img src="./path/to/image-1.jpg" alt="Image 1" /></p>
+</div></html>"
+`;
+
+exports[`blog-post should update image sources 1`] = `
+"<html><head> <title>Post 1 </title><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="icon" href="https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico"/></head><style>*,*:before,*:after{box-sizing:border-box}*{margin:0}body{line-height:1.5;-webkit-font-smoothing:antialiased}img,picture,video,canvas,svg{display:block;max-width:100%}input,button,textarea,select{font:inherit}p,h1,h2,h3,h4,h5,h6{overflow-wrap:break-word}p{text-wrap:pretty}h1,h2,h3,h4,h5,h6{text-wrap:balance}#root,#__next{isolation:isolate}html{padding:1rem;font-family:Roboto,sans-serif}.post{height:100%;border:solid thin black;padding:1rem}
+</style><div class="post"><h1>Post 1</h1>
+<p>This is the first post.
+<img src="https://example.com/path/to/image-1.jpg" alt="Image 1" /></p>
 </div></html>"
 `;

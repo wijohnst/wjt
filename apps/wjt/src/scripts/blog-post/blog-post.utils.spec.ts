@@ -6,13 +6,16 @@ import {
   renderPost,
   getRawBlogPost,
   getRawPostFileNames,
+  updateImageSources,
 } from './blog-post.utils';
 
 import {
   getMockFrontmatter,
   rawPostMocks,
   rawContentMocks,
+  getMockPostContent,
 } from './blog-post.mocks';
+import { ImageUpdateMap } from './blog-post';
 
 describe('blog-post.utils', () => {
   test('should be defined', () => {
@@ -144,6 +147,32 @@ describe('generate-blog-posts', () => {
       const rawPost = getRawBlogPost(rawPostPath);
 
       expect(rawPost).toEqual(rawPostMocks[0]);
+    });
+  });
+
+  describe('updateImageSources', () => {
+    test('should be defined', () => {
+      expect(updateImageSources).toBeDefined();
+    });
+
+    test('should update the image sources in a post', () => {
+      const post = parseRawPost(rawPostMocks[0]);
+      const imageUpdates: ImageUpdateMap[] = [
+        {
+          originalSrc: './path/to/image-1.jpg',
+          newSrc: 'https://wjt.sfo2.cdn.digitaloceanspaces.com/image-1.jpg',
+        },
+      ];
+      const expectedContent = getMockPostContent([
+        '# Post 1\n',
+        'This is the first post.',
+        `![Image 1](${imageUpdates[0].newSrc})`,
+      ]);
+
+      const updatedPost = updateImageSources(imageUpdates, post);
+
+      expect(updatedPost.content).toEqual(expectedContent);
+      expect(updatedPost.content).toMatchSnapshot();
     });
   });
 });

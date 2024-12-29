@@ -5,7 +5,7 @@ import {
   renderPost,
   getImageNodes,
   generatePostImage,
-  listBucketContent,
+  updateImageSources,
 } from './blog-post.utils';
 
 export type DefaultFrontMatter = {
@@ -29,12 +29,18 @@ export type PostImage = {
   cdnEndpoint?: string;
 };
 
+export type ImageUpdateMap = {
+  originalSrc: string;
+  newSrc: string;
+};
+
 export interface IBlogPost {
   rawPost: RawPost;
   parsedPost: Post;
   postMarkup: string;
   postImages?: PostImage[];
-  listBucketContents(): Promise<void>;
+
+  updateImageSources(imageUpdateMap: ImageUpdateMap[]): void;
 }
 
 export class BlogPost implements IBlogPost {
@@ -57,7 +63,10 @@ export class BlogPost implements IBlogPost {
     });
   }
 
-  public async listBucketContents(): Promise<void> {
-    await listBucketContent();
+  public updateImageSources(imageUpdateMap: ImageUpdateMap[]): void {
+    const updatedPost = updateImageSources(imageUpdateMap, this.parsedPost);
+
+    this.parsedPost = updatedPost;
+    this.postMarkup = renderPost(updatedPost);
   }
 }

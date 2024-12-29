@@ -10,7 +10,13 @@ import {
   WJT_SPACES_REGION,
 } from '../wjt-spaces-client';
 
-import { DefaultFrontMatter, RawPost, Post, PostImage } from './blog-post';
+import {
+  DefaultFrontMatter,
+  RawPost,
+  Post,
+  PostImage,
+  ImageUpdateMap,
+} from './blog-post';
 export const frontmatterRegex = /---([\s\S]*?)---/g;
 export const frontmatterDelimiterRegex = /---/g;
 export const newlineRegex = /\n/g;
@@ -216,4 +222,30 @@ export const isCDNPath = (
   matcher: RegExp = defaultCDNMatcher
 ): boolean => {
   return matcher.test(src);
+};
+
+export const updateImageSources = (
+  imageUpdates: ImageUpdateMap[],
+  post: Post
+): Post => {
+  const postCopy = { ...post };
+
+  for (const { originalSrc, newSrc } of imageUpdates) {
+    const imagePathMatcher = new RegExp(
+      `(!\\[.*?\\]\\()${originalSrc.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&'
+      )}(\\))`,
+      'g'
+    );
+    postCopy.content = postCopy.content.replace(
+      imagePathMatcher,
+      `$1${newSrc}$2`
+    );
+  }
+
+  return {
+    frontMatter: postCopy.frontMatter,
+    content: postCopy.content,
+  };
 };

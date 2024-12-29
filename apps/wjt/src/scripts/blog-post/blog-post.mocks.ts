@@ -9,7 +9,7 @@ export const rawPosts = [
     '---',
     '# Post 1\n',
     'This is the first post.',
-    '![Image 1](/path/to/image-1.jpg)',
+    '![Image 1](./path/to/image-1.jpg)',
   ],
   [
     '---',
