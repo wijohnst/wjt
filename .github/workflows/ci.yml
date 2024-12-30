@@ -31,9 +31,11 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - name: Run affected commands
-        run: npx nx affected -t lint test build e2e
+        run: npx nx affected -t lint test build e2e --verbose
         env:
           POSTS_PATH: apps/wjt/src/posts
+          WJT_SPACES_CLIENT_ACCESS_KEY_ID: ${{ secrets.WJT_SPACES_CLIENT_ACCESS_KEY_ID }}
+          WJT_SPACES_CLIENT_SECRET: ${{ secrets.WJT_SPACES_CLIENT_SECRET }}
 
   release:
     name: 🏷️ Release
