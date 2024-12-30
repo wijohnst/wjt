@@ -13,8 +13,7 @@
         "main": "libs/images/src/index.ts",
         "tsConfig": "libs/images/tsconfig.lib.json",
         "format": ["cjs"],
-        "assets": ["libs/images/*.md"],
-        "generatePackageJson": true
+        "assets": ["libs/images/*.md"]
       }
     }
   }
