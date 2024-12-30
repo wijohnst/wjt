@@ -1,5 +1,4 @@
 import { BlogPost, getImageNodes } from '../blog-post';
-
 import {
   rawPostMocks,
   rawContentMocks,

@@ -1,5 +1,4 @@
 import { Node } from 'commonmark';
-
 import {
   parseRawPost,
   renderPost,

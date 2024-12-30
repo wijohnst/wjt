@@ -29,7 +29,7 @@ describe('WjtSpacesClient', () => {
           Contents: {
             Key: 'test-key',
             Size: 123,
-            LastModified: new Date(),
+            LastModified: new Date('2024-12-25'),
             ETag: 'test-etag',
             StorageClass: 'test-class',
           } as unknown as ListObjectsV2CommandOutput['Contents'],
