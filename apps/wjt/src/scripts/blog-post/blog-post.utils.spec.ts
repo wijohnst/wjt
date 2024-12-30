@@ -106,6 +106,10 @@ describe('generate-blog-posts', () => {
       MockFs.restore();
     });
 
+    afterAll(() => {
+      MockFs.restore();
+    });
+
     test('should be defined', () => {
       expect(getRawPostFileNames).toBeDefined();
     });

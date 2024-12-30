@@ -34,6 +34,10 @@ describe('convert', () => {
       mock.restore();
     });
 
+    afterAll(() => {
+      mock.restore();
+    });
+
     test('should be defined', () => {
       expect(getBufferFromPath).toBeDefined();
     });
