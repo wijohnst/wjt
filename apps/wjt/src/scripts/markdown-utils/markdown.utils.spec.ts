@@ -16,6 +16,14 @@ describe('markdown utils', () => {
       });
     });
 
+    afterEach(() => {
+      mock.restore();
+    });
+
+    afterAll(() => {
+      mock.restore();
+    });
+
     test('should be defined', () => {
       expect(updateMarkdown).toBeDefined();
     });

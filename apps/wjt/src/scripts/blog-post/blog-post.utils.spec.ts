@@ -1,4 +1,4 @@
-import MockFs from 'mock-fs';
+import mock from 'mock-fs';
 import {
   defaultFrontMatter,
   parseRawPost,
@@ -99,11 +99,15 @@ const targetPaths = Object.keys(postsMockFsEntry['src/posts']);
 describe('generate-blog-posts', () => {
   describe('getRawPostFileNames', () => {
     beforeEach(() => {
-      MockFs(postsMockFsEntry);
+      mock(postsMockFsEntry);
     });
 
     afterEach(() => {
-      MockFs.restore();
+      mock.restore();
+    });
+
+    afterAll(() => {
+      mock.restore();
     });
 
     test('should be defined', () => {
@@ -117,7 +121,7 @@ describe('generate-blog-posts', () => {
     });
 
     test('should not return any non-markdown files', () => {
-      MockFs({
+      mock({
         'src/posts': {
           ...postsMockFsEntry['src/posts'],
           'post-1.html': '',
@@ -131,11 +135,15 @@ describe('generate-blog-posts', () => {
 
   describe('getRawBlogPost', () => {
     beforeEach(() => {
-      MockFs(postsMockFsEntry);
+      mock(postsMockFsEntry);
     });
 
     afterEach(() => {
-      MockFs.restore();
+      mock.restore();
+    });
+
+    afterAll(() => {
+      mock.restore();
     });
 
     test('should be defined', () => {
