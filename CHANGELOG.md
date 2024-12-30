@@ -1,3 +1,17 @@
+## 0.9.0 (2024-12-30)
+
+### 🚀 Features
+
+- add blog post image support ([#58](https://github.com/wijohnst/wjt/pull/58))
+
+### 🩹 Fixes
+
+- updates build dependecies ([#60](https://github.com/wijohnst/wjt/pull/60))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.8.0 (2024-12-25)
 
 ### 🚀 Features
