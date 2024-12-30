@@ -34,7 +34,6 @@ jobs:
         run: npx nx affected -t lint test build e2e
         env:
           POSTS_PATH: apps/wjt/src/posts
-          WJT_SPACES_CLI
           WJT_SPACES_CLIENT_ACCESS_KEY_ID: ${{ secrets.WJT_SPACES_CLIENT_ACCESS_KEY_ID }}
           WJT_SPACES_CLIENT_SECRET: ${{ secrets.WJT_SPACES_CLIENT_SECRET }}
 
