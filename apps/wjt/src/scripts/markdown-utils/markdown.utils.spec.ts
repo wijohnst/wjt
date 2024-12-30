@@ -8,7 +8,7 @@ describe('markdown utils', () => {
   describe('updateMarkdown', () => {
     beforeEach(() => {
       mock({
-        'test.md': rawPostMocks[0],
+        'src/posts/test.md': rawPostMocks[0],
         'src/views/templates/head.pug': readFileSync(
           'src/views/templates/head.pug',
           'utf-8'
@@ -22,7 +22,7 @@ describe('markdown utils', () => {
 
     test('should update image sources', () => {
       const blogPost = new BlogPost(rawPostMocks[0]);
-      const result = updateMarkdown('./test.md', blogPost.parsedPost, [
+      const result = updateMarkdown('test.md', blogPost.parsedPost, [
         {
           originalSrc: './path/to/image-1.jpg',
           newSrc: 'https://example.com/path/to/image-1.jpg',
