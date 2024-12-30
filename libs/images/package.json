@@ -1,7 +1,9 @@
 {
   "name": "@wjt/images",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "sharp": "^0.33.5"
+  },
   "type": "commonjs",
   "main": "./index.cjs",
   "typings": "./index.d.ts",

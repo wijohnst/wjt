@@ -168,7 +168,6 @@ describe('generate-blog-posts', () => {
         'This is the first post.',
         `![Image 1](${imageUpdates[0].newSrc})`,
       ]);
-
       const updatedPost = updateImageSources(imageUpdates, post);
 
       expect(updatedPost.content).toEqual(expectedContent);

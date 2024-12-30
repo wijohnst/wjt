@@ -3,13 +3,11 @@ import { Parser, HtmlRenderer, Node } from 'commonmark';
 import { cwd } from 'process';
 import { join } from 'path';
 import { readFileSync, readdirSync } from 'fs';
-
 import {
   wjtSpacesClientFactory,
   WJT_SPACES_ENDPOINT,
   WJT_SPACES_REGION,
 } from '../wjt-spaces-client';
-
 import {
   DefaultFrontMatter,
   RawPost,
@@ -17,6 +15,7 @@ import {
   PostImage,
   ImageUpdateMap,
 } from './blog-post';
+
 export const frontmatterRegex = /---([\s\S]*?)---/g;
 export const frontmatterDelimiterRegex = /---/g;
 export const newlineRegex = /\n/g;
@@ -172,7 +171,7 @@ export const getRawBlogPost = (rawPostFileName: string): RawPost => {
  * @returns {Node[]} - Commonmark Parser Nodes
  */
 export const getImageNodes = (postContent: Post['content']): Node[] => {
-  let imageNodesSet = new Set<Node>();
+  const imageNodesSet = new Set<Node>();
   const parsedContent = new Parser().parse(postContent);
   const walker = parsedContent.walker();
 
