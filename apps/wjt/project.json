@@ -8,7 +8,7 @@
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
-      "dependsOn": ["bundle-css", "package-blog-static"],
+      "dependsOn": ["bundle-css", "generate-blog-posts"],
       "defaultConfiguration": "production",
       "options": {
         "platform": "node",
