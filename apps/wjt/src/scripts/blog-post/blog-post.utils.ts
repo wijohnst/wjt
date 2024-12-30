@@ -43,6 +43,8 @@ const wjtSpacesClient = wjtSpacesClientFactory({
   },
 });
 
+//TODO: Remove me after workflow is triggered
+
 export const listBucketContent = async () => {
   return await wjtSpacesClient.getBucketContents();
 };
