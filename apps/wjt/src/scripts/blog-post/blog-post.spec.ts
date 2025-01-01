@@ -19,7 +19,12 @@ describe('blog-post', () => {
   });
 
   test('should return a parsed post object', () => {
-    const frontMatter = getMockFrontmatter('Post 1', 'Some Author', 'post-1');
+    const frontMatter = getMockFrontmatter(
+      'Post 1',
+      'Some Author',
+      'post-1',
+      'This is a sample mock post used for testing.'
+    );
     const content = rawContentMocks[0];
 
     expect(sut.parsedPost).toStrictEqual({

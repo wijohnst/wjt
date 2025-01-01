@@ -11,6 +11,7 @@ export type DefaultFrontMatter = {
   title: string;
   author: string;
   slug: string;
+  description: string;
 };
 
 export type RawPost = string;

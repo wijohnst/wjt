@@ -27,7 +27,12 @@ describe('blog-post.utils', () => {
 
     test('should return the correct post object', () => {
       const post = parseRawPost(rawPostMocks[0]);
-      const frontMatter = getMockFrontmatter('Post 1', 'Some Author', 'post-1');
+      const frontMatter = getMockFrontmatter(
+        'Post 1',
+        'Some Author',
+        'post-1',
+        'This is a sample mock post used for testing.'
+      );
       const content = rawContentMocks[0];
 
       expect(post).toEqual({
@@ -51,7 +56,8 @@ describe('blog-post.utils', () => {
       const expectedFrontmatter = getMockFrontmatter(
         'Post 1',
         'Some Author',
-        'post-1'
+        'post-1',
+        'This is a sample mock post used for testing.'
       );
 
       expect(frontmatter).toEqual(expectedFrontmatter);
@@ -77,11 +83,31 @@ describe('blog-post.utils', () => {
 
     test('should return the rendered post', () => {
       const renderedPost = renderPost({
-        frontMatter: getMockFrontmatter('Post 1', 'Some Author', 'post-1'),
+        frontMatter: getMockFrontmatter(
+          'Post 1',
+          'Some Author',
+          'post-1',
+          'This is a sample mock post used for testing.'
+        ),
         content: rawContentMocks[0],
       });
 
       expect(renderedPost).toMatchSnapshot();
+    });
+
+    test('should include <!DOCKTYPE> and lang attributes', () => {
+      const renderedPost = renderPost({
+        frontMatter: getMockFrontmatter(
+          'Post 1',
+          'Some Author',
+          'post-1',
+          'This is a sample mock post used for testing.'
+        ),
+        content: rawContentMocks[0],
+      });
+
+      expect(renderedPost).toContain('<!DOCTYPE html>');
+      expect(renderedPost).toContain('<html lang="en">');
     });
   });
 });

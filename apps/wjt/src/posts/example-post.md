@@ -2,6 +2,7 @@
 title: My Example Post
 author: Will Johnston
 slug: example-post
+description: This is sample mock post used for testing.
 ---
 
 # Example Post

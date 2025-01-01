@@ -6,6 +6,7 @@ export const rawPosts = [
     'title: Post 1',
     'author: Some Author',
     'slug: post-1',
+    'description: This is a sample mock post used for testing.',
     '---',
     '# Post 1\n',
     'This is the first post.',
@@ -16,6 +17,7 @@ export const rawPosts = [
     'title: Post 2',
     'author: Another Author',
     'slug: post-2',
+    'description: This is another sample mock post used for testing.',
     '---',
     '# Post 2\n',
     'This is the second post.',
@@ -38,11 +40,13 @@ export const getMockPostContent = (mockValues: string[]): string => {
 export const getMockFrontmatter = (
   title: string,
   author: string,
-  slug: string
+  slug: string,
+  description: string
 ): DefaultFrontMatter => ({
   title,
   author,
   slug,
+  description,
 });
 
 export const rawPostMocks = [
@@ -52,13 +56,13 @@ export const rawPostMocks = [
 ];
 
 export const rawFrontmatterMocks = [
-  getMockPostContent(rawPosts[0].slice(0, 5)),
-  getMockPostContent(rawPosts[1].slice(0, 5)),
-  getMockPostContent(rawPosts[2].slice(0, 4)),
+  getMockPostContent(rawPosts[0].slice(0, 6)),
+  getMockPostContent(rawPosts[1].slice(0, 6)),
+  getMockPostContent(rawPosts[2].slice(0, 5)),
 ];
 
 export const rawContentMocks = [
-  getMockPostContent(rawPosts[0].slice(5)),
-  getMockPostContent(rawPosts[1].slice(5)),
-  getMockPostContent(rawPosts[2].slice(4)),
+  getMockPostContent(rawPosts[0].slice(6)),
+  getMockPostContent(rawPosts[1].slice(6)),
+  getMockPostContent(rawPosts[2].slice(5)),
 ];

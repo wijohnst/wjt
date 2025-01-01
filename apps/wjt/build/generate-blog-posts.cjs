@@ -112,7 +112,8 @@ var defaultCDNMatcher = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 var defaultFrontMatter = {
   title: "",
   author: "",
-  slug: ""
+  slug: "",
+  description: ""
 };
 var requiredFields = Object.keys(defaultFrontMatter);
 var postsPath = process.env.NODE_ENV === "test" ? "src/posts" : process.env.POSTS_PATH || "src/posts";
@@ -161,7 +162,7 @@ var renderPost = (post) => {
   const writer = new import_commonmark.HtmlRenderer();
   const html = writer.render(parsedContent);
   const withWrapper = `<div class="post">${html}</div>`;
-  const openTag = "<html>";
+  const openTag = '<!DOCTYPE html><html lang="en">';
   const closeTag = "</html>";
   const finalRender = ``.concat(
     openTag,
@@ -188,7 +189,7 @@ var getRawBlogPost = (rawPostFileName) => {
   return (0, import_fs2.readFileSync)(rawPostPath, "utf8");
 };
 var getImageNodes = (postContent) => {
-  let imageNodesSet = /* @__PURE__ */ new Set();
+  const imageNodesSet = /* @__PURE__ */ new Set();
   const parsedContent = new import_commonmark.Parser().parse(postContent);
   const walker = parsedContent.walker();
   let event = walker.next();
@@ -267,6 +268,7 @@ var rawPosts = [
     "title: Post 1",
     "author: Some Author",
     "slug: post-1",
+    "description: This is a sample mock post used for testing.",
     "---",
     "# Post 1\n",
     "This is the first post.",
@@ -277,6 +279,7 @@ var rawPosts = [
     "title: Post 2",
     "author: Another Author",
     "slug: post-2",
+    "description: This is another sample mock post used for testing.",
     "---",
     "# Post 2\n",
     "This is the second post.",
@@ -300,14 +303,14 @@ var rawPostMocks = [
   getMockPostContent(rawPosts[2])
 ];
 var rawFrontmatterMocks = [
-  getMockPostContent(rawPosts[0].slice(0, 5)),
-  getMockPostContent(rawPosts[1].slice(0, 5)),
-  getMockPostContent(rawPosts[2].slice(0, 4))
+  getMockPostContent(rawPosts[0].slice(0, 6)),
+  getMockPostContent(rawPosts[1].slice(0, 6)),
+  getMockPostContent(rawPosts[2].slice(0, 5))
 ];
 var rawContentMocks = [
-  getMockPostContent(rawPosts[0].slice(5)),
-  getMockPostContent(rawPosts[1].slice(5)),
-  getMockPostContent(rawPosts[2].slice(4))
+  getMockPostContent(rawPosts[0].slice(6)),
+  getMockPostContent(rawPosts[1].slice(6)),
+  getMockPostContent(rawPosts[2].slice(5))
 ];
 
 // apps/wjt/src/scripts/markdown-utils/markdown.utils.ts
