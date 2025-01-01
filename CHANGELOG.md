@@ -1,3 +1,13 @@
+## 0.11.0 (2025-01-01)
+
+### 🚀 Features
+
+- **wjt-images:** adds support for responsive images ([#68](https://github.com/wijohnst/wjt/pull/68))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.10.0 (2025-01-01)
 
 ### 🚀 Features
