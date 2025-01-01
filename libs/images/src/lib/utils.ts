@@ -15,6 +15,6 @@ export const getBufferFromPath = async (path: string): Promise<Buffer> => {
  * @param {RegExp} matcher
  * @returns {boolean}
  */
-export const isCdnImage = (path: string, matcher: RegExp): Boolean => {
+export const isCdnImage = (path: string, matcher: RegExp): boolean => {
   return matcher.test(path);
 };

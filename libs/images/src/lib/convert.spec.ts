@@ -1,4 +1,3 @@
-import mock from 'mock-fs';
 import { readFileSync } from 'fs';
 import { convertBufferToWebp } from './convert';
 import { join } from 'path';

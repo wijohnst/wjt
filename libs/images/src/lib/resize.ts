@@ -19,7 +19,7 @@ export const resizeBySet = async (
   target: Buffer,
   sizeTargets: ResizeSet
 ): Promise<ResizeBySetOutput> => {
-  let output: ResizeBySetOutput = {};
+  const output: ResizeBySetOutput = {};
 
   for (const sizeTarget of sizeTargets) {
     const [width, height] = sizeTarget;
