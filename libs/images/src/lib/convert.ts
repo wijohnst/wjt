@@ -9,7 +9,3 @@ import { readFileSync } from 'fs';
 export const convertBufferToWebp = async (buffer: Buffer): Promise<Buffer> => {
   return await sharp(buffer, {}).webp().toBuffer();
 };
-
-export const getBufferFromPath = async (path: string): Promise<Buffer> => {
-  return readFileSync(path);
-};
