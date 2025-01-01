@@ -2911,18 +2911,3 @@ exports[`convert convertToWebp should convert an image to webp 1`] = `
   "type": "Buffer",
 }
 `;
-
-exports[`convert getBufferFromPath should return a buffer from a file path 1`] = `
-{
-  "data": [
-    99,
-    111,
-    110,
-    116,
-    101,
-    110,
-    116,
-  ],
-  "type": "Buffer",
-}
-`;
