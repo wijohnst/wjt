@@ -26,6 +26,7 @@ export const defaultFrontMatter: DefaultFrontMatter = {
   title: '',
   author: '',
   slug: '',
+  description: '',
 };
 export const requiredFields = Object.keys(defaultFrontMatter);
 export const postsPath =
@@ -42,8 +43,6 @@ const wjtSpacesClient = wjtSpacesClientFactory({
     secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET || '',
   },
 });
-
-//TODO: Remove me after workflow is triggered
 
 export const listBucketContent = async () => {
   return await wjtSpacesClient.getBucketContents();
@@ -114,7 +113,7 @@ export const renderPost = (post: Post): string => {
   const html = writer.render(parsedContent);
 
   const withWrapper = `<div class="post">${html}</div>`;
-  const openTag = '<html>';
+  const openTag = '<!DOCTYPE html><html lang="en">';
   const closeTag = '</html>';
 
   const finalRender = ``.concat(
