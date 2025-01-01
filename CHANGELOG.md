@@ -1,3 +1,13 @@
+## 0.10.0 (2025-01-01)
+
+### 🚀 Features
+
+- **wjt:** wjt-62 - updates html elements for a11y and seo best practice ([#66](https://github.com/wijohnst/wjt/pull/66))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.9.0 (2024-12-30)
 
 ### 🚀 Features
