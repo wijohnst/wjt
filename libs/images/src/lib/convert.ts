@@ -1,5 +1,4 @@
 import { default as sharp } from 'sharp';
-import { readFileSync } from 'fs';
 
 /**
  * Accepts a buffer and converts it to webp format, and then returns the new buffer
