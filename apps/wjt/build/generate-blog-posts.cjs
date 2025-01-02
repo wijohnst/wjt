@@ -21,7 +21,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// apps/wjt/src/scripts/generate-blog-posts.ts
+// apps/wjt/src/scripts/utils/utils.ts
 var import_fs4 = require("fs");
 var import_path3 = require("path");
 
@@ -332,7 +332,7 @@ ${frontmatterString}
 ---`;
 };
 
-// apps/wjt/src/scripts/generate-blog-posts.ts
+// apps/wjt/src/scripts/utils/utils.ts
 var wjtSpacesClient2 = wjtSpacesClientFactory(wjtSpacesClientDefaultConfig);
 var init = async () => {
   console.log("Generating blog posts \u{1F4DD}...\n\n");
@@ -404,4 +404,6 @@ var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
     updateMarkdown(rawPostFileName, blogPost.parsedPost, imageUpdates);
   }
 };
+
+// apps/wjt/src/scripts/generate-blog-posts.ts
 init();
