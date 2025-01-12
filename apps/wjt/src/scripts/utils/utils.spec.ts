@@ -1,7 +1,12 @@
 import mock from 'mock-fs';
 import * as utils from './utils';
-import { rawPostMocks, mockFileSystem } from '../blog-post';
-import { readFileSync } from 'fs';
+import {
+  rawPostMocks,
+  mockFileSystem,
+  BlogPost,
+  PostImage,
+} from '../blog-post';
+import * as fs from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
 
@@ -14,7 +19,7 @@ describe('utils', () => {
     beforeEach(() => {
       mock({
         ...mockFileSystem,
-        'src/posts/path/to/image-1.jpg': readFileSync(
+        'src/posts/path/to/image-1.jpg': fs.readFileSync(
           join(cwd(), 'src/posts/post_images/sample_image_200_200.jpg')
         ),
       });
@@ -26,17 +31,34 @@ describe('utils', () => {
 
     afterAll(() => {
       mock.restore();
+      jest.restoreAllMocks();
     });
 
     test('should convert images', async () => {
-      const handleImageConversionSpy = jest
-        .spyOn(utils, 'handleImageConversion')
-        .mockImplementation(() => {
-          return Promise.resolve();
-        });
+      jest.spyOn(utils, 'handleImageConversion').mockImplementation(() => {
+        return Promise.resolve();
+      });
 
       await utils.processPosts(['example-post.md']);
-      expect(handleImageConversionSpy).toHaveBeenCalled();
+
+      expect(utils.handleImageConversion).toHaveBeenCalledWith(
+        'example-post.md',
+        expect.any(Array<PostImage>),
+        expect.any(BlogPost)
+      );
+    });
+
+    test.skip('should write the processed post to the file system', async () => {
+      const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+
+      await utils.processPosts(['example-post.md']);
+
+      expect(writeFileSyncSpy).toHaveBeenCalledWith(
+        join('src/posts', 'example-post.html'),
+        expect.any(String)
+      );
+
+      writeFileSyncSpy.mockRestore();
     });
 
     test('should throw if the image cannot be converted', async () => {
@@ -49,6 +71,8 @@ describe('utils', () => {
       await expect(utils.processPosts(['example-post.md'])).rejects.toThrow(
         'Image conversion failed'
       );
+
+      handleImageConversionSpy.mockRestore();
     });
   });
 });

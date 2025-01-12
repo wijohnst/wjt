@@ -23,7 +23,7 @@ import { updateMarkdown } from '../markdown-utils';
 const wjtSpacesClient = wjtSpacesClientFactory(wjtSpacesClientDefaultConfig);
 
 export const init = async () => {
-  console.log('Generating blog posts 📝...\n\n');
+  console.log('📝 Generating blog posts...\n');
 
   try {
     await processPosts(getRawPostFileNames());
@@ -56,12 +56,14 @@ export const handleImageConversion = async (
 
   for (const postImage of postImages) {
     if (isCdnImage(postImage.originalSrc, DEFAULT_CDN_MATCHER)) {
-      console.log('Image is already on CDN. Skipping conversion...\n');
+      console.log('✅ Image is already on CDN. Skipping conversion...\n');
       continue;
     }
 
-    console.log(`${postImage.originalSrc} is not on CDN.\n`);
-    console.log(`Converting ${postImage.originalSrc} to webp...\n`);
+    console.log(
+      ` 🔁 ${postImage.originalSrc} is not on CDN. Converting to webp...\n`
+    );
+
     const targetPath = join(postsPath, postImage.originalSrc);
     const targetImageName = `${
       postImage.originalSrc.split('/').pop().split('.')[0]
@@ -71,14 +73,11 @@ export const handleImageConversion = async (
       const webPBuffer = await convertBufferToWebp(
         await getBufferFromPath(targetPath)
       );
-      console.log(`Uploading ${targetImageName} to CDN...\n`);
+      console.log(`🆙 Uploading ${targetImageName} to CDN...\n`);
       const { cdnEndpointUrl } = await wjtSpacesClient.putWebpObject({
         Body: webPBuffer,
         Key: targetImageName,
       });
-
-      console.log(`Uploaded ${targetImageName} to CDN.\n`);
-      console.log(`Updating imageUpdateMap with ${cdnEndpointUrl}...\n`);
 
       imageUpdates.push({
         originalSrc: postImage.originalSrc,
@@ -90,9 +89,9 @@ export const handleImageConversion = async (
   }
 
   if (imageUpdates.length > 0) {
-    console.log('Updating image sources in post...\n');
+    console.log('🧑‍💻 Updating image sources in post...\n');
     blogPost.updateImageSources(imageUpdates);
-    console.log('Updating image sources in markdown file...\n');
+    console.log('📝 Updating image sources in markdown file...\n');
     updateMarkdown(rawPostFileName, blogPost.parsedPost, imageUpdates);
   }
 };
