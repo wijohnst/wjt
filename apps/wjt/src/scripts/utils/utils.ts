@@ -36,7 +36,7 @@ export const init = async () => {
 };
 
 /**
- *
+ * Converts images and writes the blog post .html files to the posts directory
  * @param {string[]} rawPostFileNames
  */
 export const processPosts = async (rawPostFileNames: string[]) => {
@@ -101,7 +101,6 @@ export const handleImageConversion = async (
     }
   }
 
-  // TODO: Refactor to own function
   if (imageUpdates.length > 0) {
     console.log('🧑‍💻 Updating image sources in post...\n');
     blogPost.updateImageSources(imageUpdates);
