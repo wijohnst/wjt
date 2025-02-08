@@ -1,4 +1,7 @@
 import { DefaultFrontMatter } from './blog-post';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { cwd } from 'process';
 
 export const rawPosts = [
   [
@@ -33,6 +36,15 @@ export const rawPosts = [
   ],
 ];
 
+export const mockHeadTemplate = `
+head 
+    title #{title || 'willjohnston.tech'} 
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="description" content=description ? description : 'willjohnston.tech')
+    link(rel='icon' href='https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico')
+    link(rel='stylesheet' href='min.css')
+`;
+
 export const getMockPostContent = (mockValues: string[]): string => {
   return mockValues.join('\n');
 };
@@ -66,3 +78,10 @@ export const rawContentMocks = [
   getMockPostContent(rawPosts[1].slice(6)),
   getMockPostContent(rawPosts[2].slice(5)),
 ];
+
+export const mockFileSystem = {
+  'src/posts/example-post.md': rawPostMocks[0],
+  'src/posts/example-post-2.md': rawPostMocks[1],
+  'src/posts/example-post-3.md': rawPostMocks[2],
+  'src/views/templates/head.pug': mockHeadTemplate,
+};

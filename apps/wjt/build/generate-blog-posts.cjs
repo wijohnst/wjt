@@ -21,7 +21,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// apps/wjt/src/scripts/generate-blog-posts.ts
+// apps/wjt/src/scripts/utils/utils.ts
 var import_fs4 = require("fs");
 var import_path3 = require("path");
 
@@ -294,6 +294,14 @@ var rawPosts = [
     "This is the third post."
   ]
 ];
+var mockHeadTemplate = `
+head 
+    title #{title || 'willjohnston.tech'} 
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="description" content=description ? description : 'willjohnston.tech')
+    link(rel='icon' href='https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico')
+    link(rel='stylesheet' href='min.css')
+`;
 var getMockPostContent = (mockValues) => {
   return mockValues.join("\n");
 };
@@ -312,6 +320,16 @@ var rawContentMocks = [
   getMockPostContent(rawPosts[1].slice(6)),
   getMockPostContent(rawPosts[2].slice(5))
 ];
+var mockFileSystem = {
+  "src/posts/example-post.md": rawPostMocks[0],
+  "src/posts/example-post-2.md": rawPostMocks[1],
+  "src/posts/example-post-3.md": rawPostMocks[2],
+  //   'src/views/templates/head.pug': readFileSync(
+  //     join(cwd(), 'src/views/templates/head.pug'),
+  //     'utf8'
+  //   ),
+  "src/views/templates/head.pug": mockHeadTemplate
+};
 
 // apps/wjt/src/scripts/markdown-utils/markdown.utils.ts
 var import_fs3 = require("fs");
@@ -332,63 +350,51 @@ ${frontmatterString}
 ---`;
 };
 
-// apps/wjt/src/scripts/generate-blog-posts.ts
+// apps/wjt/src/scripts/utils/utils.ts
 var wjtSpacesClient2 = wjtSpacesClientFactory(wjtSpacesClientDefaultConfig);
 var init = async () => {
-  console.log("Generating blog posts \u{1F4DD}...\n\n");
-  const rawPostFileNames = getRawPostFileNames();
-  const processPosts = async () => {
-    for (const rawPostFileName of rawPostFileNames) {
-      const rawPost = getRawBlogPost(rawPostFileName);
-      const blogPost = new BlogPost(rawPost);
-      const targetPath = (0, import_path3.join)(
-        postsPath,
-        blogPost.parsedPost.frontMatter.slug + ".html"
-      );
-      try {
-        await handleImageConversion(
-          rawPostFileName,
-          blogPost.postImages,
-          blogPost
-        );
-      } catch (error) {
-        console.error("Error handling image conversion:", error);
-      } finally {
-        (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
-      }
-    }
-  };
-  processPosts().catch((error) => {
+  console.log("\u{1F4DD} Generating blog posts...\n");
+  try {
+    await processPosts(getRawPostFileNames());
+  } catch (error) {
     console.error("Error processing posts:", error);
-  });
+  }
+};
+var processPosts = async (rawPostFileNames) => {
+  for (const rawPostFileName of rawPostFileNames) {
+    const rawPost = getRawBlogPost(rawPostFileName);
+    const blogPost = new BlogPost(rawPost);
+    const targetPath = (0, import_path3.join)(
+      postsPath,
+      blogPost.parsedPost.frontMatter.slug + ".html"
+    );
+    await handleImageConversion(rawPostFileName, blogPost.postImages, blogPost);
+    (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
+  }
 };
 var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
   const imageUpdates = [];
   for (const postImage of postImages) {
     if (isCdnImage(postImage.originalSrc, DEFAULT_CDN_MATCHER)) {
-      console.log("Image is already on CDN. Skipping conversion...\n");
+      console.log("\u2705 Image is already on CDN. Skipping conversion...\n");
       continue;
     }
-    console.log(`${postImage.originalSrc} is not on CDN.
-`);
-    console.log(`Converting ${postImage.originalSrc} to webp...
-`);
+    console.log(
+      ` \u{1F501} ${postImage.originalSrc} is not on CDN. Converting to webp...
+`
+    );
     const targetPath = (0, import_path3.join)(postsPath, postImage.originalSrc);
     const targetImageName = `${postImage.originalSrc.split("/").pop().split(".")[0]}.webp`;
     try {
       const webPBuffer = await convertBufferToWebp(
         await getBufferFromPath(targetPath)
       );
-      console.log(`Uploading ${targetImageName} to CDN...
+      console.log(`\u{1F199} Uploading ${targetImageName} to CDN...
 `);
       const { cdnEndpointUrl } = await wjtSpacesClient2.putWebpObject({
         Body: webPBuffer,
         Key: targetImageName
       });
-      console.log(`Uploaded ${targetImageName} to CDN.
-`);
-      console.log(`Updating imageUpdateMap with ${cdnEndpointUrl}...
-`);
       imageUpdates.push({
         originalSrc: postImage.originalSrc,
         newSrc: cdnEndpointUrl
@@ -398,10 +404,12 @@ var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
     }
   }
   if (imageUpdates.length > 0) {
-    console.log("Updating image sources in post...\n");
+    console.log("\u{1F9D1}\u200D\u{1F4BB} Updating image sources in post...\n");
     blogPost.updateImageSources(imageUpdates);
-    console.log("Updating image sources in markdown file...\n");
+    console.log("\u{1F4DD} Updating image sources in markdown file...\n");
     updateMarkdown(rawPostFileName, blogPost.parsedPost, imageUpdates);
   }
 };
+
+// apps/wjt/src/scripts/generate-blog-posts.ts
 init();
