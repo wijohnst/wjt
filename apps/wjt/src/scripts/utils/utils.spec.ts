@@ -1,12 +1,7 @@
 import mock from 'mock-fs';
 import * as utils from './utils';
-import {
-  rawPostMocks,
-  mockFileSystem,
-  BlogPost,
-  PostImage,
-} from '../blog-post';
-import * as fs from 'fs';
+import { mockFileSystem, BlogPost, PostImage } from '../blog-post';
+import fs from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
 
@@ -48,13 +43,13 @@ describe('utils', () => {
       );
     });
 
-    test.skip('should write the processed post to the file system', async () => {
+    test('should write the processed post to the file system', async () => {
       const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
 
       await utils.processPosts(['example-post.md']);
 
       expect(writeFileSyncSpy).toHaveBeenCalledWith(
-        join('src/posts', 'example-post.html'),
+        join('src/posts', 'post-1.html'),
         expect.any(String)
       );
 

@@ -22,6 +22,9 @@ import { updateMarkdown } from '../markdown-utils';
 
 const wjtSpacesClient = wjtSpacesClientFactory(wjtSpacesClientDefaultConfig);
 
+/**
+ * Generates blog posts by processing raw markdown files in the posts directory.
+ */
 export const init = async () => {
   console.log('📝 Generating blog posts...\n');
 
@@ -32,6 +35,10 @@ export const init = async () => {
   }
 };
 
+/**
+ *
+ * @param {string[]} rawPostFileNames
+ */
 export const processPosts = async (rawPostFileNames: string[]) => {
   for (const rawPostFileName of rawPostFileNames) {
     const rawPost = getRawBlogPost(rawPostFileName);
@@ -47,6 +54,12 @@ export const processPosts = async (rawPostFileNames: string[]) => {
   }
 };
 
+/**
+ * For non-cdn images, converts images to webp and uploads to CDN
+ * @param {string} rawPostFileName
+ * @param {PostImage[]} postImages
+ * @param {BlogPost} blogPost
+ */
 export const handleImageConversion = async (
   rawPostFileName: string,
   postImages: PostImage[],
@@ -88,6 +101,7 @@ export const handleImageConversion = async (
     }
   }
 
+  // TODO: Refactor to own function
   if (imageUpdates.length > 0) {
     console.log('🧑‍💻 Updating image sources in post...\n');
     blogPost.updateImageSources(imageUpdates);

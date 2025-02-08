@@ -22,8 +22,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // apps/wjt/src/scripts/utils/utils.ts
-var import_fs5 = require("fs");
-var import_path4 = require("path");
+var import_fs4 = require("fs");
+var import_path3 = require("path");
 
 // libs/images/src/lib/convert.ts
 var import_sharp = __toESM(require("sharp"));
@@ -262,9 +262,6 @@ var BlogPost = class {
 };
 
 // apps/wjt/src/scripts/blog-post/blog-post.mocks.ts
-var import_fs3 = require("fs");
-var import_path2 = require("path");
-var import_process2 = require("process");
 var rawPosts = [
   [
     "---",
@@ -297,6 +294,14 @@ var rawPosts = [
     "This is the third post."
   ]
 ];
+var mockHeadTemplate = `
+head 
+    title #{title || 'willjohnston.tech'} 
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="description" content=description ? description : 'willjohnston.tech')
+    link(rel='icon' href='https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico')
+    link(rel='stylesheet' href='min.css')
+`;
 var getMockPostContent = (mockValues) => {
   return mockValues.join("\n");
 };
@@ -319,22 +324,23 @@ var mockFileSystem = {
   "src/posts/example-post.md": rawPostMocks[0],
   "src/posts/example-post-2.md": rawPostMocks[1],
   "src/posts/example-post-3.md": rawPostMocks[2],
-  "src/views/templates/head.pug": (0, import_fs3.readFileSync)(
-    (0, import_path2.join)((0, import_process2.cwd)(), "src/views/templates/head.pug"),
-    "utf8"
-  )
+  //   'src/views/templates/head.pug': readFileSync(
+  //     join(cwd(), 'src/views/templates/head.pug'),
+  //     'utf8'
+  //   ),
+  "src/views/templates/head.pug": mockHeadTemplate
 };
 
 // apps/wjt/src/scripts/markdown-utils/markdown.utils.ts
-var import_fs4 = require("fs");
-var import_path3 = require("path");
+var import_fs3 = require("fs");
+var import_path2 = require("path");
 var updateMarkdown = (targetFileName, parsedPost, imageUpdateMap) => {
   const frontmatter = generateFrontmatterString(parsedPost.frontMatter);
   const updatedPost = updateImageSources(imageUpdateMap, parsedPost);
   const finalPost = `${frontmatter}
 
 ${updatedPost.content}`;
-  (0, import_fs4.writeFileSync)((0, import_path3.join)(postsPath, targetFileName), finalPost);
+  (0, import_fs3.writeFileSync)((0, import_path2.join)(postsPath, targetFileName), finalPost);
   return finalPost;
 };
 var generateFrontmatterString = (frontmatter) => {
@@ -358,12 +364,12 @@ var processPosts = async (rawPostFileNames) => {
   for (const rawPostFileName of rawPostFileNames) {
     const rawPost = getRawBlogPost(rawPostFileName);
     const blogPost = new BlogPost(rawPost);
-    const targetPath = (0, import_path4.join)(
+    const targetPath = (0, import_path3.join)(
       postsPath,
       blogPost.parsedPost.frontMatter.slug + ".html"
     );
     await handleImageConversion(rawPostFileName, blogPost.postImages, blogPost);
-    (0, import_fs5.writeFileSync)(targetPath, blogPost.postMarkup);
+    (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
   }
 };
 var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
@@ -377,7 +383,7 @@ var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
       ` \u{1F501} ${postImage.originalSrc} is not on CDN. Converting to webp...
 `
     );
-    const targetPath = (0, import_path4.join)(postsPath, postImage.originalSrc);
+    const targetPath = (0, import_path3.join)(postsPath, postImage.originalSrc);
     const targetImageName = `${postImage.originalSrc.split("/").pop().split(".")[0]}.webp`;
     try {
       const webPBuffer = await convertBufferToWebp(
