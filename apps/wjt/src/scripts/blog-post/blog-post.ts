@@ -1,26 +1,38 @@
 import { Node } from 'commonmark';
 import {
-  parseRawPost,
+  parseRawMarkdownPost,
   renderPost,
   getImageNodes,
   generatePostImage,
-  updateImageSources,
+  _updateImageSources,
 } from './blog-post.utils';
 
-export type DefaultFrontMatter = {
+/**
+ * Represents the required front matter for a blog post
+ */
+export type RequiredFrontMatter = {
   title: string;
   author: string;
   slug: string;
   description: string;
 };
 
-export type RawPost = string;
+/**
+ * A string representation of a raw markdown document
+ */
+export type RawMarkdownPost = string;
 
+/**
+ * A parsed markdown document
+ */
 export type Post = {
-  frontMatter: DefaultFrontMatter;
+  frontMatter: RequiredFrontMatter;
   content: string;
 };
 
+/**
+ * Represents an image in a blog post
+ */
 export type PostImage = {
   originalSrc: string;
   altText: string;
@@ -29,13 +41,19 @@ export type PostImage = {
   cdnEndpoint?: string;
 };
 
+/**
+ * Represents a mapping of image source updates
+ */
 export type ImageUpdateMap = {
   originalSrc: string;
   newSrc: string;
 };
 
+/**
+ * Represents a blog post in @wjt/service
+ */
 export interface IBlogPost {
-  rawPost: RawPost;
+  rawPost: RawMarkdownPost;
   parsedPost: Post;
   postMarkup: string;
   postImages?: PostImage[];
@@ -50,8 +68,8 @@ export class BlogPost implements IBlogPost {
 
   private _imageNodes?: Node[] | undefined;
 
-  constructor(public rawPost: RawPost) {
-    this.parsedPost = parseRawPost(rawPost);
+  constructor(public rawPost: RawMarkdownPost) {
+    this.parsedPost = parseRawMarkdownPost(rawPost);
     this.postMarkup = renderPost(this.parsedPost);
     this._imageNodes = getImageNodes(this.parsedPost.content);
     this.initPostImages();
@@ -64,7 +82,7 @@ export class BlogPost implements IBlogPost {
   }
 
   public updateImageSources(imageUpdateMap: ImageUpdateMap[]): void {
-    const updatedPost = updateImageSources(imageUpdateMap, this.parsedPost);
+    const updatedPost = _updateImageSources(imageUpdateMap, this.parsedPost);
 
     this.parsedPost = updatedPost;
     this.postMarkup = renderPost(updatedPost);

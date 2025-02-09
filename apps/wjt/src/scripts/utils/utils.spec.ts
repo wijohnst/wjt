@@ -1,9 +1,11 @@
 import mock from 'mock-fs';
 import * as utils from './utils';
-import { mockFileSystem, BlogPost, PostImage } from '../blog-post';
+import { mockFileSystem, BlogPost } from '../blog-post';
 import fs from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
+
+import { getRawBlogPost } from '../blog-post';
 
 describe('utils', () => {
   describe('processPosts', () => {
@@ -38,7 +40,6 @@ describe('utils', () => {
 
       expect(utils.handleImageConversion).toHaveBeenCalledWith(
         'example-post.md',
-        expect.any(Array<PostImage>),
         expect.any(BlogPost)
       );
     });

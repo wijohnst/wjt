@@ -10,7 +10,6 @@ import {
   getRawBlogPost,
   getRawPostFileNames,
   postsPath,
-  PostImage,
   ImageUpdateMap,
 } from '../blog-post';
 import {
@@ -48,7 +47,7 @@ export const processPosts = async (rawPostFileNames: string[]) => {
       blogPost.parsedPost.frontMatter.slug + '.html'
     );
 
-    await handleImageConversion(rawPostFileName, blogPost.postImages, blogPost);
+    await handleImageConversion(rawPostFileName, blogPost);
 
     writeFileSync(targetPath, blogPost.postMarkup);
   }
@@ -62,12 +61,11 @@ export const processPosts = async (rawPostFileNames: string[]) => {
  */
 export const handleImageConversion = async (
   rawPostFileName: string,
-  postImages: PostImage[],
   blogPost: BlogPost
 ) => {
   const imageUpdates: ImageUpdateMap[] = [];
 
-  for (const postImage of postImages) {
+  for (const postImage of blogPost.postImages) {
     if (isCdnImage(postImage.originalSrc, DEFAULT_CDN_MATCHER)) {
       console.log('✅ Image is already on CDN. Skipping conversion...\n');
       continue;
@@ -86,7 +84,9 @@ export const handleImageConversion = async (
       const webPBuffer = await convertBufferToWebp(
         await getBufferFromPath(targetPath)
       );
+
       console.log(`🆙 Uploading ${targetImageName} to CDN...\n`);
+
       const { cdnEndpointUrl } = await wjtSpacesClient.putWebpObject({
         Body: webPBuffer,
         Key: targetImageName,

@@ -9,8 +9,8 @@ import {
   WJT_SPACES_REGION,
 } from '../wjt-spaces-client';
 import {
-  DefaultFrontMatter,
-  RawPost,
+  RequiredFrontMatter,
+  RawMarkdownPost,
   Post,
   PostImage,
   ImageUpdateMap,
@@ -22,7 +22,7 @@ export const newlineRegex = /\n/g;
 export const styleRegex = /<link rel="stylesheet" href="min.css"\/>/g;
 export const defaultCDNMatcher =
   /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
-export const defaultFrontMatter: DefaultFrontMatter = {
+export const defaultFrontMatter: RequiredFrontMatter = {
   title: '',
   author: '',
   slug: '',
@@ -44,7 +44,11 @@ const wjtSpacesClient = wjtSpacesClientFactory({
   },
 });
 
-export const listBucketContent = async () => {
+/**
+ * Utility method for fetching the contents of the s3://wjt bucket
+ * @returns {Promise<unknown>} - The contents of the bucket
+ */
+export const fetchBucketContents = async (): Promise<unknown> => {
   return await wjtSpacesClient.getBucketContents();
 };
 
@@ -52,7 +56,7 @@ export const listBucketContent = async () => {
  * Returns an array of parsed post objects
  * @returns {Post[]}
  */
-export const parseRawPost = (rawPost: RawPost): Post => {
+export const parseRawMarkdownPost = (rawPost: RawMarkdownPost): Post => {
   return {
     frontMatter: getFrontmatter(rawPost),
     content: rawPost?.replace(frontmatterRegex, '').trim(),
@@ -61,10 +65,12 @@ export const parseRawPost = (rawPost: RawPost): Post => {
 
 /**
  * Returns the frontmatter of a post or throws if any required fields are missing
- * @param {RawPost }rawPost
- * @returns {DefaultFrontMatter}
+ * @param {RawMarkdownPost }rawPost
+ * @returns {RequiredFrontMatter}
  */
-export const getFrontmatter = (rawPost: RawPost): DefaultFrontMatter => {
+export const getFrontmatter = (
+  rawPost: RawMarkdownPost
+): RequiredFrontMatter => {
   const rawFrontmatter = rawPost
     .match(frontmatterRegex)?.[0]
     // Removes the frontmatter delimiter from the frontmatter string
@@ -98,7 +104,7 @@ export const getFrontmatter = (rawPost: RawPost): DefaultFrontMatter => {
 };
 
 /**
- * Accepts a post object and returns the rendered post as a UTF-8 string. This string can be written to an HTML file and server to the client.
+ * Accepts a post object and returns the rendered post as a UTF-8 string. This string can be written to an HTML file and served to the client.
  * @param {Post} post
  * @returns {string} The rendered post
  */
@@ -159,9 +165,9 @@ export const getRawPostFileNames = (): string[] => {
 /**
  * Returns the raw post content of a markdown file based on file name
  * @param {string} rawPostFileName
- * @returns {RawPost}
+ * @returns {RawMarkdownPost}
  */
-export const getRawBlogPost = (rawPostFileName: string): RawPost => {
+export const getRawBlogPost = (rawPostFileName: string): RawMarkdownPost => {
   const rawPostPath = join(postsPath, rawPostFileName);
   return readFileSync(rawPostPath, 'utf8');
 };
@@ -224,13 +230,14 @@ export const isCDNPath = (
   return matcher.test(src);
 };
 
-export const updateImageSources = (
+export const _updateImageSources = (
   imageUpdates: ImageUpdateMap[],
   post: Post
 ): Post => {
   const postCopy = { ...post };
 
   for (const { originalSrc, newSrc } of imageUpdates) {
+    // Create a regex to match the original image source
     const imagePathMatcher = new RegExp(
       `(!\\[.*?\\]\\()${originalSrc.replace(
         /[.*+?^${}()|[\]\\]/g,
@@ -238,12 +245,14 @@ export const updateImageSources = (
       )}(\\))`,
       'g'
     );
+    // Replace the original image source with the new image source
     postCopy.content = postCopy.content.replace(
       imagePathMatcher,
       `$1${newSrc}$2`
     );
   }
 
+  // Return the updated post object
   return {
     frontMatter: postCopy.frontMatter,
     content: postCopy.content,
