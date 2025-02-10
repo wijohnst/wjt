@@ -1,7 +1,7 @@
 import mock from 'mock-fs';
 import {
   defaultFrontMatter,
-  parseRawPost,
+  parseRawMarkdownPost,
   getFrontmatter,
   renderPost,
   getRawBlogPost,
@@ -22,11 +22,11 @@ describe('blog-post.utils', () => {
     expect(defaultFrontMatter).toBeDefined();
   });
 
-  describe('parseRawPost - util', () => {
-    test('should be defined', () => expect(parseRawPost).toBeDefined());
+  describe('parseRawMarkdownPost - util', () => {
+    test('should be defined', () => expect(parseRawMarkdownPost).toBeDefined());
 
     test('should return the correct post object', () => {
-      const post = parseRawPost(rawPostMocks[0]);
+      const post = parseRawMarkdownPost(rawPostMocks[0]);
       const frontMatter = getMockFrontmatter(
         'Post 1',
         'Some Author',
@@ -190,7 +190,7 @@ describe('generate-blog-posts', () => {
     });
 
     test('should update the image sources in a post', () => {
-      const post = parseRawPost(rawPostMocks[0]);
+      const post = parseRawMarkdownPost(rawPostMocks[0]);
       const imageUpdates: ImageUpdateMap[] = [
         {
           originalSrc: './path/to/image-1.jpg',
