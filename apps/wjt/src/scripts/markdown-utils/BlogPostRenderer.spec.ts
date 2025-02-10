@@ -34,7 +34,7 @@ describe('BlogPostRenderer', () => {
   });
 
   test('should not render a picture tag for unsafe protocols', () => {
-    let sut = new BlogPostRenderer({
+    const sut = new BlogPostRenderer({
       safe: true,
     });
     const content = `# Hello World\n\n![alt text](javascript:alert('hello'))`;

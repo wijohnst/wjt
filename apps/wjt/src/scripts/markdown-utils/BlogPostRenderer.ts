@@ -1,9 +1,9 @@
 import { HtmlRenderer, Node, HtmlRenderingOptions } from 'commonmark';
 
-var reUnsafeProtocol = /^javascript:|vbscript:|file:|data:/i;
-var reSafeDataProtocol = /^data:image\/(?:png|gif|jpeg|webp)/i;
+const reUnsafeProtocol = /^javascript:|vbscript:|file:|data:/i;
+const reSafeDataProtocol = /^data:image\/(?:png|gif|jpeg|webp)/i;
 
-var potentiallyUnsafe = function (url) {
+const potentiallyUnsafe = function (url) {
   return reUnsafeProtocol.test(url) && !reSafeDataProtocol.test(url);
 };
 export class BlogPostRenderer extends HtmlRenderer {
