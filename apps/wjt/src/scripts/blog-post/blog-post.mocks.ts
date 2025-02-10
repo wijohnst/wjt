@@ -1,4 +1,4 @@
-import { DefaultFrontMatter } from './blog-post';
+import { RequiredFrontMatter } from './blog-post';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
@@ -54,7 +54,7 @@ export const getMockFrontmatter = (
   author: string,
   slug: string,
   description: string
-): DefaultFrontMatter => ({
+): RequiredFrontMatter => ({
   title,
   author,
   slug,

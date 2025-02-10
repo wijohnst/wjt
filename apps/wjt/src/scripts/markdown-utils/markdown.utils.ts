@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs';
 import {
   Post,
   ImageUpdateMap,
-  updateImageSources,
+  _updateImageSources,
   postsPath,
 } from '../blog-post';
 import { join } from 'path';
@@ -10,10 +10,10 @@ import { join } from 'path';
 export const updateMarkdown = (
   targetFileName: string,
   parsedPost: Post,
-  imageUpdateMap: ImageUpdateMap[]
+  imageUpdateMapArr: ImageUpdateMap[]
 ): string => {
   const frontmatter = generateFrontmatterString(parsedPost.frontMatter);
-  const updatedPost = updateImageSources(imageUpdateMap, parsedPost);
+  const updatedPost = _updateImageSources(imageUpdateMapArr, parsedPost);
   const finalPost = `${frontmatter}\n\n${updatedPost.content}`;
   writeFileSync(join(postsPath, targetFileName), finalPost);
   return finalPost;
