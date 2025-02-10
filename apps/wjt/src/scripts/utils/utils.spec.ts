@@ -5,8 +5,6 @@ import fs from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
 
-import { getRawBlogPost } from '../blog-post';
-
 describe('utils', () => {
   describe('processPosts', () => {
     test('should be defined', () => {
