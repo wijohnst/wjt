@@ -41,8 +41,7 @@ describe('images', () => {
     test('should return true for a CDN image', () => {
       const path =
         'https://wjt.sfo2.cdn.digitaloceanspaces.com/sample_image.webp';
-      const matcher =
-        /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*\.webp/;
+      const matcher = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 
       expect(isCdnImage(path, matcher)).toBe(true);
     });

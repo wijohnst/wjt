@@ -1,10 +1,6 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import {
-  isCdnImage,
-  getBufferFromPath,
-  convertBufferToWebp,
-} from '@wjt/images';
+import { isCdnImage, getBufferFromPath } from '@wjt/images';
 import {
   BlogPost,
   getRawBlogPost,

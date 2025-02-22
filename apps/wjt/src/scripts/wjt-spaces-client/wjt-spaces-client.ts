@@ -14,7 +14,7 @@ export const WJT_SPACES_CDN_ENDPOINT = `https://wjt.sfo2.cdn.digitaloceanspaces.
 export const WJT_SPACES_ENDPOINT = `https://sfo2.digitaloceanspaces.com`;
 export const WJT_SPACES_REGION = `sfo2`;
 export const DEFAULT_CDN_MATCHER =
-  /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*.webp/;
+  /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 
 export interface IWjtSpacesClient {
   s3Client: S3Client;

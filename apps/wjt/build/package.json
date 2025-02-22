@@ -1,6 +1,6 @@
 {
   "name": "@wjt/service",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "imports": {
     "#package": "./package.json"
   }
