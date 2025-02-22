@@ -11,6 +11,7 @@ import {
   getRawPostFileNames,
   postsPath,
   ImageUpdateMap,
+  ImageNameValidator,
 } from '../blog-post';
 import {
   wjtSpacesClientDefaultConfig,
@@ -41,15 +42,24 @@ export const init = async () => {
 export const processPosts = async (rawPostFileNames: string[]) => {
   for (const rawPostFileName of rawPostFileNames) {
     const rawPost = getRawBlogPost(rawPostFileName);
-    const blogPost = new BlogPost(rawPost);
-    const targetPath = join(
-      postsPath,
-      blogPost.parsedPost.frontMatter.slug + '.html'
-    );
+    const imageNameValidator = new ImageNameValidator(rawPost, rawPostFileName);
 
-    await handleImageConversion(rawPostFileName, blogPost);
+    if (imageNameValidator.isValid) {
+      const blogPost = new BlogPost(rawPost);
+      const targetPath = join(
+        postsPath,
+        blogPost.parsedPost.frontMatter.slug + '.html'
+      );
 
-    writeFileSync(targetPath, blogPost.postMarkup);
+      await handleImageConversion(rawPostFileName, blogPost);
+
+      writeFileSync(targetPath, blogPost.postMarkup);
+    }
+
+    imageNameValidator.errors.forEach((error) => {
+      const errorOutput = imageNameValidator.getErrorOutput(error);
+      console.error(errorOutput);
+    });
   }
 };
 
@@ -76,9 +86,11 @@ export const handleImageConversion = async (
     );
 
     const targetPath = join(postsPath, postImage.originalSrc);
+    const targetFileExtension = targetPath.split('.').pop();
+
     const targetImageName = `${
       postImage.originalSrc.split('/').pop().split('.')[0]
-    }.webp`;
+    }.${targetFileExtension}`;
 
     try {
       const webPBuffer = await convertBufferToWebp(

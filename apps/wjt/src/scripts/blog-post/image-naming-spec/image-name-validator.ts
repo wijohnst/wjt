@@ -116,4 +116,18 @@ export class ImageNameValidator {
     this.validateAltTexts();
     this.validateImageSources();
   }
+
+  get isValid(): boolean {
+    return this.errors.length === 0;
+  }
+
+  public getErrorOutput(error: ImageNameValidationError): string {
+    const { documentPath, imageData, message } = error;
+
+    return `${documentPath}: ${message}. Image data: ${JSON.stringify(
+      imageData,
+      null,
+      2
+    )}\n`;
+  }
 }

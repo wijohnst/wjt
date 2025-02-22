@@ -98,4 +98,29 @@ describe('ImageNameValidator', () => {
       });
     });
   });
+
+  describe('getErrorOutput', () => {
+    test('should be defined', () => {
+      expect(sut.getErrorOutput).toBeDefined();
+    });
+
+    test('should return the correct error message string', () => {
+      const error = {
+        documentPath: 'some-markdown-doc.md',
+        imageData: {
+          alt: 'alt-text$200x200',
+          src: 'image.gif',
+        },
+        message: 'Invalid file extension. Must be .jpg, .jpeg, .png, or .svg',
+      };
+
+      expect(sut.getErrorOutput(error)).toEqual(
+        `some-markdown-doc.md: Invalid file extension. Must be .jpg, .jpeg, .png, or .svg. Image data: ${JSON.stringify(
+          error.imageData,
+          null,
+          2
+        )}\n`
+      );
+    });
+  });
 });

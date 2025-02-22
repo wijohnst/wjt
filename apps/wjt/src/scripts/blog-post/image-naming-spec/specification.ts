@@ -39,7 +39,7 @@ export const parseCommonmarkImage = (
     'parseCommonmarkImage error: Node is not a valid commonmark image'
   );
 };
-const altTextRegex = new RegExp(/^([a-zA-Z-]+)\$(\d+)x(\d+)$/);
+const altTextRegex = /^([a-zA-Z-]+)\$(\d+)x(\d+)$/;
 const validFileExtensions = /\.(jpg|jpeg|png|svg)$/;
 
 /**

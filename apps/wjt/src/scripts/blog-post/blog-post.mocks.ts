@@ -1,7 +1,4 @@
 import { RequiredFrontMatter } from './blog-post';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { cwd } from 'process';
 
 export const rawPosts = [
   [
@@ -13,7 +10,7 @@ export const rawPosts = [
     '---',
     '# Post 1\n',
     'This is the first post.',
-    '![Image 1](./path/to/image-1.jpg)',
+    '![image$100x200](./path/to/image-1.jpg)',
   ],
   [
     '---',
@@ -24,7 +21,7 @@ export const rawPosts = [
     '---',
     '# Post 2\n',
     'This is the second post.',
-    '![CDN Image](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)',
+    '![cdn-image$200x200](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)',
   ],
   [
     '---',

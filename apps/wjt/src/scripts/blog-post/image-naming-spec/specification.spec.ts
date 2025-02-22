@@ -84,10 +84,16 @@ describe('isAltText', () => {
     expect(isAltText).toBeDefined();
   });
 
-  test('should return true - valid meta text', () => {
+  test('should return true - valid alt text', () => {
     const text = 'alt-text$100x200';
 
     expect(isAltText(text)).toBe(true);
+  });
+
+  test('should return false - invalid alt test', () => {
+    const text = 'Sample Image';
+
+    expect(isAltText(text)).toBe(false);
   });
 
   test('should return false - has whitespace in alt text', () => {
