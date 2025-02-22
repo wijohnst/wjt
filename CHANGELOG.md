@@ -1,3 +1,13 @@
+## 0.12.0 (2025-02-22)
+
+### 🚀 Features
+
+- **wjt-service:** wjt-61 - adds image naming spec ([#73](https://github.com/wijohnst/wjt/pull/73))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.11.0 (2025-01-01)
 
 ### 🚀 Features
