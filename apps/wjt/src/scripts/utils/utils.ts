@@ -93,14 +93,16 @@ export const handleImageConversion = async (
     }.${targetFileExtension}`;
 
     try {
-      const webPBuffer = await convertBufferToWebp(
-        await getBufferFromPath(targetPath)
-      );
+      //   const webPBuffer = await convertBufferToWebp(
+      //     await getBufferFromPath(targetPath)
+      //   );
+
+      const fallbackSrcBuffer = await getBufferFromPath(targetPath);
 
       console.log(`🆙 Uploading ${targetImageName} to CDN...\n`);
 
       const { cdnEndpointUrl } = await wjtSpacesClient.putWebpObject({
-        Body: webPBuffer,
+        Body: fallbackSrcBuffer,
         Key: targetImageName,
       });
 

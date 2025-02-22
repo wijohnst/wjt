@@ -22,12 +22,17 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // apps/wjt/src/scripts/utils/utils.ts
+var import_fs4 = require("fs");
 var import_path3 = require("path");
 
 // libs/images/src/lib/convert.ts
 var import_sharp = __toESM(require("sharp"));
 
 // libs/images/src/lib/utils.ts
+var import_fs = require("fs");
+var getBufferFromPath = async (path) => {
+  return (0, import_fs.readFileSync)(path);
+};
 var isCdnImage = (path, matcher) => {
   return matcher.test(path);
 };
@@ -37,7 +42,7 @@ var import_pug = require("pug");
 var import_commonmark = require("commonmark");
 var import_process = require("process");
 var import_path = require("path");
-var import_fs = require("fs");
+var import_fs2 = require("fs");
 
 // apps/wjt/src/scripts/wjt-spaces-client/wjt-spaces-client.ts
 var import_client_s3 = require("@aws-sdk/client-s3");
@@ -171,14 +176,14 @@ var getPath = (subpath) => {
   }
   return (0, import_path.join)((0, import_process.cwd)(), `apps/wjt/${subpath}`);
 };
-var getStylesheet = () => (0, import_fs.readFileSync)(getPath("src/views/styles/min.css"), "utf-8");
+var getStylesheet = () => (0, import_fs2.readFileSync)(getPath("src/views/styles/min.css"), "utf-8");
 var styleTemplate = `<style>${getStylesheet()}</style>`;
 var getRawPostFileNames = () => {
-  return (0, import_fs.readdirSync)(postsPath).filter((file) => file.endsWith(".md"));
+  return (0, import_fs2.readdirSync)(postsPath).filter((file) => file.endsWith(".md"));
 };
 var getRawBlogPost = (rawPostFileName) => {
   const rawPostPath = (0, import_path.join)(postsPath, rawPostFileName);
-  return (0, import_fs.readFileSync)(rawPostPath, "utf8");
+  return (0, import_fs2.readFileSync)(rawPostPath, "utf8");
 };
 var getImageNodes = (postContent) => {
   const imageNodesSet = /* @__PURE__ */ new Set();
@@ -447,7 +452,7 @@ var ImageNameValidator = class {
 };
 
 // apps/wjt/src/scripts/markdown-utils/markdown.utils.ts
-var import_fs2 = require("fs");
+var import_fs3 = require("fs");
 var import_path2 = require("path");
 var updateMarkdown = (targetFileName, parsedPost, imageUpdateMapArr) => {
   const frontmatter = generateFrontmatterString(parsedPost.frontMatter);
@@ -455,7 +460,7 @@ var updateMarkdown = (targetFileName, parsedPost, imageUpdateMapArr) => {
   const finalPost = `${frontmatter}
 
 ${updatedPost.content}`;
-  (0, import_fs2.writeFileSync)((0, import_path2.join)(postsPath, targetFileName), finalPost);
+  (0, import_fs3.writeFileSync)((0, import_path2.join)(postsPath, targetFileName), finalPost);
   return finalPost;
 };
 var generateFrontmatterString = (frontmatter) => {
@@ -486,6 +491,7 @@ var processPosts = async (rawPostFileNames) => {
         blogPost.parsedPost.frontMatter.slug + ".html"
       );
       await handleImageConversion(rawPostFileName, blogPost);
+      (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
     }
     imageNameValidator.errors.forEach((error) => {
       const errorOutput = imageNameValidator.getErrorOutput(error);
@@ -507,7 +513,21 @@ var handleImageConversion = async (rawPostFileName, blogPost) => {
     const targetPath = (0, import_path3.join)(postsPath, postImage.originalSrc);
     const targetFileExtension = targetPath.split(".").pop();
     const targetImageName = `${postImage.originalSrc.split("/").pop().split(".")[0]}.${targetFileExtension}`;
-    console.log(targetImageName);
+    try {
+      const fallbackSrcBuffer = await getBufferFromPath(targetPath);
+      console.log(`\u{1F199} Uploading ${targetImageName} to CDN...
+`);
+      const { cdnEndpointUrl } = await wjtSpacesClient2.putWebpObject({
+        Body: fallbackSrcBuffer,
+        Key: targetImageName
+      });
+      imageUpdates.push({
+        originalSrc: postImage.originalSrc,
+        newSrc: cdnEndpointUrl
+      });
+    } catch (error) {
+      console.error(`Error processing ${postImage.originalSrc}:`, error);
+    }
   }
   if (imageUpdates.length > 0) {
     console.log("\u{1F9D1}\u200D\u{1F4BB} Updating image sources in post...\n");
