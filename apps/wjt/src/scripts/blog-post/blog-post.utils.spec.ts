@@ -200,7 +200,7 @@ describe('generate-blog-posts', () => {
       const expectedContent = getMockPostContent([
         '# Post 1\n',
         'This is the first post.',
-        `![Image 1](${imageUpdates[0].newSrc})`,
+        `![image$100x200](${imageUpdates[0].newSrc})`,
       ]);
       const updatedPost = _updateImageSources(imageUpdates, post);
 

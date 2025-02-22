@@ -27,9 +27,6 @@ var import_path3 = require("path");
 
 // libs/images/src/lib/convert.ts
 var import_sharp = __toESM(require("sharp"));
-var convertBufferToWebp = async (buffer) => {
-  return await (0, import_sharp.default)(buffer, {}).webp().toBuffer();
-};
 
 // libs/images/src/lib/utils.ts
 var import_fs = require("fs");
@@ -126,7 +123,7 @@ var wjtSpacesClient = wjtSpacesClientFactory({
     secretAccessKey: process.env.WJT_SPACES_CLIENT_SECRET || ""
   }
 });
-var parseRawPost = (rawPost) => {
+var parseRawMarkdownPost = (rawPost) => {
   return {
     frontMatter: getFrontmatter(rawPost),
     content: rawPost?.replace(frontmatterRegex, "").trim()
@@ -219,7 +216,7 @@ var generatePostImage = (imageNode) => {
 var isCDNPath = (src, matcher = defaultCDNMatcher) => {
   return matcher.test(src);
 };
-var updateImageSources = (imageUpdates, post) => {
+var _updateImageSources = (imageUpdates, post) => {
   const postCopy = { ...post };
   for (const { originalSrc, newSrc } of imageUpdates) {
     const imagePathMatcher = new RegExp(
@@ -244,7 +241,7 @@ var updateImageSources = (imageUpdates, post) => {
 var BlogPost = class {
   constructor(rawPost) {
     this.rawPost = rawPost;
-    this.parsedPost = parseRawPost(rawPost);
+    this.parsedPost = parseRawMarkdownPost(rawPost);
     this.postMarkup = renderPost(this.parsedPost);
     this._imageNodes = getImageNodes(this.parsedPost.content);
     this.initPostImages();
@@ -255,7 +252,7 @@ var BlogPost = class {
     });
   }
   updateImageSources(imageUpdateMap) {
-    const updatedPost = updateImageSources(imageUpdateMap, this.parsedPost);
+    const updatedPost = _updateImageSources(imageUpdateMap, this.parsedPost);
     this.parsedPost = updatedPost;
     this.postMarkup = renderPost(updatedPost);
   }
@@ -272,7 +269,7 @@ var rawPosts = [
     "---",
     "# Post 1\n",
     "This is the first post.",
-    "![Image 1](./path/to/image-1.jpg)"
+    "![image$100x200](./path/to/image-1.jpg)"
   ],
   [
     "---",
@@ -283,7 +280,7 @@ var rawPosts = [
     "---",
     "# Post 2\n",
     "This is the second post.",
-    "![CDN Image](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)"
+    "![cdn-image$200x200](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)"
   ],
   [
     "---",
@@ -324,19 +321,142 @@ var mockFileSystem = {
   "src/posts/example-post.md": rawPostMocks[0],
   "src/posts/example-post-2.md": rawPostMocks[1],
   "src/posts/example-post-3.md": rawPostMocks[2],
-  //   'src/views/templates/head.pug': readFileSync(
-  //     join(cwd(), 'src/views/templates/head.pug'),
-  //     'utf8'
-  //   ),
   "src/views/templates/head.pug": mockHeadTemplate
+};
+
+// apps/wjt/src/scripts/blog-post/image-naming-spec/image-name-validator.ts
+var import_commonmark2 = require("commonmark");
+
+// apps/wjt/src/scripts/blog-post/image-naming-spec/specification.ts
+var isCommonmarkImage = (node) => {
+  return node.type === "image";
+};
+var parseCommonmarkImage = (node) => {
+  if (isCommonmarkImage(node)) {
+    return {
+      alt: node.firstChild.literal,
+      src: node.destination
+    };
+  }
+  throw new Error(
+    "parseCommonmarkImage error: Node is not a valid commonmark image"
+  );
+};
+var altTextRegex = /^([a-zA-Z-]+)\$(\d+)x(\d+)$/;
+var validFileExtensions = /\.(jpg|jpeg|png|svg)$/;
+var isAltText = (text) => {
+  return altTextRegex.test(text);
+};
+var isValidFileExtension = (url) => {
+  return validFileExtensions.test(url);
+};
+
+// apps/wjt/src/scripts/blog-post/image-naming-spec/image-name-validator.ts
+var ImageNameValidator = class {
+  constructor(markdownDocument, documentPath) {
+    this.errors = [];
+    this.documentPath = documentPath;
+    this.document = markdownDocument;
+    this.parsedDocument = this.parseMarkdown();
+    this.imageNodes = this.parseImageNodes();
+    this.parseImageData();
+    this.validate();
+  }
+  /**
+   * Parses the markdown document and returns a Commonmark node
+   * @returns {Node} - A parsed markdown document
+   */
+  parseMarkdown() {
+    const parser = new import_commonmark2.Parser();
+    return parser.parse(this.document);
+  }
+  /**
+   * Returns all unique image nodes in the parsed document
+   * @returns {Node[]} - An array of image nodes
+   */
+  parseImageNodes() {
+    const imageNodes = [];
+    const walker = this.parsedDocument.walker();
+    let pos;
+    while (pos = walker.next()) {
+      const { node } = pos;
+      if (node.type === "image" && !imageNodes.includes(node)) {
+        imageNodes.push(node);
+      }
+    }
+    return imageNodes;
+  }
+  /**
+   * Getter for image nodes
+   * @returns {Node[]} - An array of image nodes
+   */
+  getImageNodes() {
+    return this.imageNodes;
+  }
+  /**
+   * Parses the image nodes into structured data
+   */
+  parseImageData() {
+    this._parsedCommonmarkData = this.imageNodes.map(
+      (node) => parseCommonmarkImage(node)
+    );
+  }
+  /**
+   * Getter for parsedCommonmarkData
+   */
+  get parsedCommonmarkData() {
+    return this._parsedCommonmarkData;
+  }
+  /**
+   * Checks that the alt text of the image is valid according to the image naming specification; invalid alt texts are pushed to the errors array
+   * @returns {boolean}
+   */
+  validateAltTexts() {
+    this._parsedCommonmarkData.forEach((imageData) => {
+      if (!isAltText(imageData.alt)) {
+        this.errors.push({
+          documentPath: this.documentPath,
+          imageData,
+          message: "Invalid alt text"
+        });
+      }
+    });
+  }
+  validateImageSources() {
+    this._parsedCommonmarkData.forEach((imageData) => {
+      if (!isValidFileExtension(imageData.src)) {
+        this.errors.push({
+          documentPath: this.documentPath,
+          imageData,
+          message: "Invalid file extension. Must be .jpg, .jpeg, .png, or .svg"
+        });
+      }
+    });
+  }
+  validate() {
+    this.validateAltTexts();
+    this.validateImageSources();
+  }
+  get isValid() {
+    return this.errors.length === 0;
+  }
+  getErrorOutput(error) {
+    const { documentPath, imageData, message } = error;
+    return `${documentPath}: ${message}. Image data: ${JSON.stringify(
+      imageData,
+      null,
+      2
+    )}
+`;
+  }
 };
 
 // apps/wjt/src/scripts/markdown-utils/markdown.utils.ts
 var import_fs3 = require("fs");
 var import_path2 = require("path");
-var updateMarkdown = (targetFileName, parsedPost, imageUpdateMap) => {
+var updateMarkdown = (targetFileName, parsedPost, imageUpdateMapArr) => {
   const frontmatter = generateFrontmatterString(parsedPost.frontMatter);
-  const updatedPost = updateImageSources(imageUpdateMap, parsedPost);
+  const updatedPost = _updateImageSources(imageUpdateMapArr, parsedPost);
   const finalPost = `${frontmatter}
 
 ${updatedPost.content}`;
@@ -363,18 +483,25 @@ var init = async () => {
 var processPosts = async (rawPostFileNames) => {
   for (const rawPostFileName of rawPostFileNames) {
     const rawPost = getRawBlogPost(rawPostFileName);
-    const blogPost = new BlogPost(rawPost);
-    const targetPath = (0, import_path3.join)(
-      postsPath,
-      blogPost.parsedPost.frontMatter.slug + ".html"
-    );
-    await handleImageConversion(rawPostFileName, blogPost.postImages, blogPost);
-    (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
+    const imageNameValidator = new ImageNameValidator(rawPost, rawPostFileName);
+    if (imageNameValidator.isValid) {
+      const blogPost = new BlogPost(rawPost);
+      const targetPath = (0, import_path3.join)(
+        postsPath,
+        blogPost.parsedPost.frontMatter.slug + ".html"
+      );
+      await handleImageConversion(rawPostFileName, blogPost);
+      (0, import_fs4.writeFileSync)(targetPath, blogPost.postMarkup);
+    }
+    imageNameValidator.errors.forEach((error) => {
+      const errorOutput = imageNameValidator.getErrorOutput(error);
+      console.error(errorOutput);
+    });
   }
 };
-var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
+var handleImageConversion = async (rawPostFileName, blogPost) => {
   const imageUpdates = [];
-  for (const postImage of postImages) {
+  for (const postImage of blogPost.postImages) {
     if (isCdnImage(postImage.originalSrc, DEFAULT_CDN_MATCHER)) {
       console.log("\u2705 Image is already on CDN. Skipping conversion...\n");
       continue;
@@ -384,15 +511,14 @@ var handleImageConversion = async (rawPostFileName, postImages, blogPost) => {
 `
     );
     const targetPath = (0, import_path3.join)(postsPath, postImage.originalSrc);
-    const targetImageName = `${postImage.originalSrc.split("/").pop().split(".")[0]}.webp`;
+    const targetFileExtension = targetPath.split(".").pop();
+    const targetImageName = `${postImage.originalSrc.split("/").pop().split(".")[0]}.${targetFileExtension}`;
     try {
-      const webPBuffer = await convertBufferToWebp(
-        await getBufferFromPath(targetPath)
-      );
+      const fallbackSrcBuffer = await getBufferFromPath(targetPath);
       console.log(`\u{1F199} Uploading ${targetImageName} to CDN...
 `);
       const { cdnEndpointUrl } = await wjtSpacesClient2.putWebpObject({
-        Body: webPBuffer,
+        Body: fallbackSrcBuffer,
         Key: targetImageName
       });
       imageUpdates.push({
