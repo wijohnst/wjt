@@ -50,7 +50,7 @@ var WJT_SPACES_BUCKET_ID = `wjt`;
 var WJT_SPACES_CDN_ENDPOINT = `https://wjt.sfo2.cdn.digitaloceanspaces.com`;
 var WJT_SPACES_ENDPOINT = `https://sfo2.digitaloceanspaces.com`;
 var WJT_SPACES_REGION = `sfo2`;
-var DEFAULT_CDN_MATCHER = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*.webp/;
+var DEFAULT_CDN_MATCHER = /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 var wjtSpacesClientDefaultConfig = {
   region: WJT_SPACES_REGION,
   endpoint: WJT_SPACES_ENDPOINT,
