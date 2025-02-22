@@ -1,3 +1,13 @@
+## 0.12.1 (2025-02-22)
+
+### 🩹 Fixes
+
+- updates CDN matcher ([#74](https://github.com/wijohnst/wjt/pull/74))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.12.0 (2025-02-22)
 
 ### 🚀 Features
