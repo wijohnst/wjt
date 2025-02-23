@@ -1,3 +1,13 @@
+## 0.13.0 (2025-02-23)
+
+### 🚀 Features
+
+- **wjt-service:** wjt-61 - implements blog image ([#75](https://github.com/wijohnst/wjt/pull/75))
+
+### ❤️ Thank You
+
+- Will Johnston @wijohnst
+
 ## 0.12.1 (2025-02-22)
 
 ### 🩹 Fixes
