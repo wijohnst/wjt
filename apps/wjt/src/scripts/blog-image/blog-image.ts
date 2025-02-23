@@ -21,8 +21,10 @@ export class BlogImage {
   private readonly _isCDNPath: boolean;
   private readonly CDN_PATH: string;
   private readonly responsiveImageWidths: ResponsiveImageWidths;
-  private _imageMetaData: ImageMetaData;
+  private readonly _imageName: string;
+
   private _imageSrc: string;
+  private _imageMetaData: ImageMetaData;
 
   public _imageBuffer: Buffer;
   public self: Node;
@@ -66,7 +68,7 @@ export class BlogImage {
     return generateSrcSet(
       this.responsiveImageWidths,
       this.CDN_PATH,
-      this._imageSrc
+      this.imageName
     );
   }
 
@@ -92,15 +94,19 @@ export class BlogImage {
   get imageSrc(): string {
     return this._imageSrc;
   }
+
+  get imageName(): string {
+    const [imageName] = this._imageSrc.split('.');
+    return imageName;
+  }
 }
 
 // UTILS
 export const generateSrcSet = (
   responsiveImageWidths: ResponsiveImageWidths,
   cdnPath: string,
-  imageSrc: string
+  imageName: string
 ): string[] => {
-  const [imageName] = imageSrc.split('.');
   return responsiveImageWidths.map(
     (width) => `${cdnPath}/${imageName}-${width}w.webp ${width}w`
   );

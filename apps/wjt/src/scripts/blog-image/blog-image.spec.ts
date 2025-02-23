@@ -99,6 +99,16 @@ describe('BlogImage', () => {
     });
   });
 
+  describe('imageName', () => {
+    test('should be defined', () => {
+      expect(sut.imageName).toBeDefined();
+    });
+
+    test('should return the image name', () => {
+      expect(sut.imageName).toEqual('image');
+    });
+  });
+
   describe('sourceSet', () => {
     test('should be defined', () => {
       expect(sut.sourceSet).toBeDefined();
@@ -123,7 +133,7 @@ describe('BlogImage', () => {
         const srcSet = generateSrcSet(
           responsiveImageWidths,
           WJT_SPACES_CDN_ENDPOINT,
-          'image.jpg'
+          'image'
         );
 
         expect(srcSet).toEqual([
