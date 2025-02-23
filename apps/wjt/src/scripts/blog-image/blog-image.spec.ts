@@ -9,8 +9,6 @@ import {
   WJT_SPACES_CDN_ENDPOINT,
 } from '../wjt-spaces-client';
 
-jest.mock('console');
-
 describe('BlogImage', () => {
   test('should be defined', () => {
     expect(BlogImage).toBeDefined();
