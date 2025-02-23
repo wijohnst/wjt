@@ -31,15 +31,14 @@ export class BlogImage {
   public sourceSet: string[];
 
   constructor(
-    srcPath: string,
     node: Node,
     CDN_MATCHER = DEFAULT_CDN_MATCHER,
     TARGET_CDN_PATH = WJT_SPACES_CDN_ENDPOINT,
     responsiveImageWidths: ResponsiveImageWidths = DEFAULT_SOURCE_SET
   ) {
     this.self = node;
-    this.fallbackSrcPath = srcPath;
-    this._isCDNPath = _isCDNImage(srcPath, CDN_MATCHER);
+    this.fallbackSrcPath = this.self.destination;
+    this._isCDNPath = _isCDNImage(this.fallbackSrcPath, CDN_MATCHER);
     this.CDN_PATH = TARGET_CDN_PATH;
     this.responsiveImageWidths = responsiveImageWidths;
     this.initImageData();
@@ -96,7 +95,7 @@ export class BlogImage {
   }
 
   get imageName(): string {
-    const [imageName] = this._imageSrc.split('.');
+    const [imageName] = this.fallbackSrcPath.split('/').reverse()[0].split('.');
     return imageName;
   }
 }

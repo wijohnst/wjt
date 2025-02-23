@@ -17,20 +17,18 @@ describe('BlogImage', () => {
   let sut: BlogImage;
 
   beforeEach(() => {
-    const parentNode = parseMarkdownString('![alt-text$200x200](image.jpg)');
+    const parentNode = parseMarkdownString(
+      '![alt-text$200x200](./path/to/image.jpg)'
+    );
     const [node] = getImageNodes(parentNode);
 
     mock({
       'path/to/image.jpg': Buffer.from('image data'),
     });
 
-    sut = new BlogImage(
-      'path/to/image.jpg',
-      node,
-      DEFAULT_CDN_MATCHER,
-      WJT_SPACES_CDN_ENDPOINT,
-      [200]
-    );
+    sut = new BlogImage(node, DEFAULT_CDN_MATCHER, WJT_SPACES_CDN_ENDPOINT, [
+      200,
+    ]);
   });
 
   afterEach(() => {
@@ -61,11 +59,7 @@ describe('BlogImage', () => {
       );
       const [cdnImageNode] = getImageNodes(cdnNode);
 
-      const cdnImage = new BlogImage(
-        'https://cdn.example.com/image.jpg',
-        cdnImageNode,
-        cdnMatcher
-      );
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
 
       expect(cdnImage.isCDNPath).toBe(true);
     });
@@ -90,8 +84,20 @@ describe('BlogImage', () => {
       expect(sut.imageSrc).toBeDefined();
     });
 
-    test('should return the image src', () => {
-      expect(sut.imageSrc).toEqual('image.jpg');
+    test('should return the image src - local path', () => {
+      expect(sut.imageSrc).toEqual('./path/to/image.jpg');
+    });
+
+    test('should return the image src - CDN path', () => {
+      const cdnMatcher = /cdn\.example\.com/;
+      const cdnNode = parseMarkdownString(
+        '![alt-text$200x200](https://cdn.example.com/image.jpg)'
+      );
+      const [cdnImageNode] = getImageNodes(cdnNode);
+
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
+
+      expect(cdnImage.imageSrc).toEqual('https://cdn.example.com/image.jpg');
     });
   });
 
@@ -100,8 +106,20 @@ describe('BlogImage', () => {
       expect(sut.imageName).toBeDefined();
     });
 
-    test('should return the image name', () => {
+    test('should return the image name - local path', () => {
       expect(sut.imageName).toEqual('image');
+    });
+
+    test('should return the image name - CDN path', () => {
+      const cdnMatcher = /cdn\.example\.com/;
+      const cdnNode = parseMarkdownString(
+        '![alt-text$200x200](https://cdn.example.com/image.jpg)'
+      );
+      const [cdnImageNode] = getImageNodes(cdnNode);
+
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
+
+      expect(cdnImage.imageName).toEqual('image');
     });
   });
 
