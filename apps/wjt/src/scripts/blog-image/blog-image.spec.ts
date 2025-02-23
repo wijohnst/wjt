@@ -38,8 +38,6 @@ describe('BlogImage', () => {
   });
 
   describe('imageBuffer', () => {
-    beforeEach(() => {});
-
     test('should return a Buffer', async () => {
       await sut.generateImageBuffer();
 
