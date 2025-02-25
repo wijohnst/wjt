@@ -42,6 +42,17 @@ describe('blog-post', () => {
     expect(sut.postImages).toMatchSnapshot();
   });
 
+  describe('blogImages', () => {
+    test('should be defined', () => {
+      expect(sut.blogImages).toBeDefined();
+    });
+
+    test('should return an array of blog images', () => {
+      expect(sut.blogImages).toHaveLength(1);
+      expect(sut.blogImages).toMatchSnapshot();
+    });
+  });
+
   test('should update image sources', () => {
     sut.updateImageSources([
       {

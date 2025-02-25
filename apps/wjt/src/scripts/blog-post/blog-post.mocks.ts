@@ -21,7 +21,7 @@ export const rawPosts = [
     '---',
     '# Post 2\n',
     'This is the second post.',
-    '![cdn-image$200x200](https://wjt.sfo2.cdn.digitaloceanspaces.com/wjt_logo.ico)',
+    '![cdn-image$200x200](https://wjt.sfo2.cdn.digitaloceanspaces.com/image-2.jpg)',
   ],
   [
     '---',

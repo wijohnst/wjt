@@ -1,5 +1,10 @@
 import mock from 'mock-fs';
-import { BlogImage, generateSrcSet } from './blog-image';
+import {
+  BlogImage,
+  generateSrcSet,
+  isValidSourceSetString,
+  generateSourceSetString,
+} from './blog-image';
 import {
   parseMarkdownString,
   getImageNodes,
@@ -17,20 +22,18 @@ describe('BlogImage', () => {
   let sut: BlogImage;
 
   beforeEach(() => {
-    const parentNode = parseMarkdownString('![alt-text$200x200](image.jpg)');
+    const parentNode = parseMarkdownString(
+      '![alt-text$200x200](./path/to/image.jpg)'
+    );
     const [node] = getImageNodes(parentNode);
 
     mock({
       'path/to/image.jpg': Buffer.from('image data'),
     });
 
-    sut = new BlogImage(
-      'path/to/image.jpg',
-      node,
-      DEFAULT_CDN_MATCHER,
-      WJT_SPACES_CDN_ENDPOINT,
-      [200]
-    );
+    sut = new BlogImage(node, DEFAULT_CDN_MATCHER, WJT_SPACES_CDN_ENDPOINT, [
+      200,
+    ]);
   });
 
   afterEach(() => {
@@ -61,11 +64,7 @@ describe('BlogImage', () => {
       );
       const [cdnImageNode] = getImageNodes(cdnNode);
 
-      const cdnImage = new BlogImage(
-        'https://cdn.example.com/image.jpg',
-        cdnImageNode,
-        cdnMatcher
-      );
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
 
       expect(cdnImage.isCDNPath).toBe(true);
     });
@@ -90,8 +89,20 @@ describe('BlogImage', () => {
       expect(sut.imageSrc).toBeDefined();
     });
 
-    test('should return the image src', () => {
-      expect(sut.imageSrc).toEqual('image.jpg');
+    test('should return the image src - local path', () => {
+      expect(sut.imageSrc).toEqual('./path/to/image.jpg');
+    });
+
+    test('should return the image src - CDN path', () => {
+      const cdnMatcher = /cdn\.example\.com/;
+      const cdnNode = parseMarkdownString(
+        '![alt-text$200x200](https://cdn.example.com/image.jpg)'
+      );
+      const [cdnImageNode] = getImageNodes(cdnNode);
+
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
+
+      expect(cdnImage.imageSrc).toEqual('https://cdn.example.com/image.jpg');
     });
   });
 
@@ -100,8 +111,20 @@ describe('BlogImage', () => {
       expect(sut.imageName).toBeDefined();
     });
 
-    test('should return the image name', () => {
+    test('should return the image name - local path', () => {
       expect(sut.imageName).toEqual('image');
+    });
+
+    test('should return the image name - CDN path', () => {
+      const cdnMatcher = /cdn\.example\.com/;
+      const cdnNode = parseMarkdownString(
+        '![alt-text$200x200](https://cdn.example.com/image.jpg)'
+      );
+      const [cdnImageNode] = getImageNodes(cdnNode);
+
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
+
+      expect(cdnImage.imageName).toEqual('image');
     });
   });
 
@@ -136,6 +159,46 @@ describe('BlogImage', () => {
           `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`,
           `${WJT_SPACES_CDN_ENDPOINT}/image-400w.webp 400w`,
         ]);
+      });
+    });
+
+    describe('isValidSourceSetString', () => {
+      test('should be defined', () => {
+        expect(isValidSourceSetString).toBeDefined();
+      });
+
+      test('should return true for a valid source set string', () => {
+        const sourceSetString = `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`;
+
+        expect(isValidSourceSetString(sourceSetString)).toBe(true);
+      });
+
+      test('should return false for an invalid source set string', () => {
+        const sourceSetString = 'invalid-source-set-string';
+
+        expect(isValidSourceSetString(sourceSetString)).toBe(false);
+      });
+    });
+
+    describe('generateSourceSetString', () => {
+      test('should be defined', () => {
+        expect(generateSourceSetString).toBeDefined();
+      });
+
+      test('should return the source set string', () => {
+        const sourceSetString = `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`;
+
+        expect(generateSourceSetString(sourceSetString)).toBe(
+          sourceSetString as any
+        );
+      });
+
+      test('should throw an error for an invalid source set string', () => {
+        const sourceSetString = 'invalid-source-set-string';
+
+        expect(() => generateSourceSetString(sourceSetString)).toThrow(
+          'Invalid source set string'
+        );
       });
     });
   });
