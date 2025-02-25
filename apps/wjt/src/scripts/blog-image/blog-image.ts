@@ -13,6 +13,7 @@ import {
 
 type Width = number;
 type ResponsiveImageWidths = Array<Width>;
+type SourceSetString = string & { __brand: 'SourceSetString' };
 
 const DEFAULT_SOURCE_SET: ResponsiveImageWidths = [320, 480, 800, 1600];
 
@@ -28,7 +29,7 @@ export class BlogImage {
 
   public _imageBuffer: Buffer;
   public self: Node;
-  public sourceSet: string[];
+  public sourceSet: SourceSetString[];
 
   constructor(
     node: Node,
@@ -45,6 +46,10 @@ export class BlogImage {
     this.sourceSet = this.initSourceSet();
   }
 
+  /**
+   * Generates a buffer from the image path
+   * @returns Promise<void>
+   */
   async generateImageBuffer(): Promise<void> {
     try {
       this._imageBuffer = await getBufferFromPath(this.fallbackSrcPath);
@@ -53,6 +58,10 @@ export class BlogImage {
     }
   }
 
+  /**
+   * Initializes image metadata from Commonmark image node
+   * @returns void
+   */
   private initImageData(): void {
     try {
       const { alt, src } = parseCommonmarkImage(this.self);
@@ -63,7 +72,11 @@ export class BlogImage {
     }
   }
 
-  private initSourceSet(): string[] {
+  /**
+   * Initializes the source set for the image
+   * @returns {SourceSetString[]}
+   */
+  private initSourceSet(): SourceSetString[] {
     return generateSrcSet(
       this.responsiveImageWidths,
       this.CDN_PATH,
@@ -101,12 +114,53 @@ export class BlogImage {
 }
 
 // UTILS
+
+/**
+ * Generates a source set for the image
+ * @param {ResponsiveImageWidths} responsiveImageWidths
+ * @param {string} cdnPath
+ * @param {string} imageName
+ * @returns
+ */
 export const generateSrcSet = (
   responsiveImageWidths: ResponsiveImageWidths,
   cdnPath: string,
   imageName: string
-): string[] => {
-  return responsiveImageWidths.map(
-    (width) => `${cdnPath}/${imageName}-${width}w.webp ${width}w`
-  );
+): SourceSetString[] => {
+  return responsiveImageWidths.map((width) => {
+    const sourceSetString = generateSourceSetString(
+      `${cdnPath}/${imageName}-${width}w.webp ${width}w`
+    );
+
+    return sourceSetString;
+  });
+};
+
+/**
+ * SourceSetString factory
+ * @param {string} value
+ * @param {RegExp} cdnMatcher - default is DEFAULT_CDN_MATCHER
+ * @returns {SourceSetString}
+ */
+export const generateSourceSetString = (
+  value: string,
+  cdnMatcher: RegExp = DEFAULT_CDN_MATCHER
+): SourceSetString => {
+  if (!isValidSourceSetString(value, cdnMatcher)) {
+    throw new Error('Invalid source set string');
+  }
+  return value as SourceSetString;
+};
+
+/**
+ * Type guard for SourceSetString
+ * @param {string} value
+ * @param {RegExp} cdnMatcher - default is DEFAULT_CDN_MATCHER
+ * @returns {boolean}
+ */
+export const isValidSourceSetString = (
+  value: string,
+  cdnMatcher: RegExp = DEFAULT_CDN_MATCHER
+): boolean => {
+  return cdnMatcher.test(value);
 };

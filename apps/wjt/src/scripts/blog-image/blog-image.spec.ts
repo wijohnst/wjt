@@ -1,5 +1,10 @@
 import mock from 'mock-fs';
-import { BlogImage, generateSrcSet } from './blog-image';
+import {
+  BlogImage,
+  generateSrcSet,
+  isValidSourceSetString,
+  generateSourceSetString,
+} from './blog-image';
 import {
   parseMarkdownString,
   getImageNodes,
@@ -154,6 +159,46 @@ describe('BlogImage', () => {
           `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`,
           `${WJT_SPACES_CDN_ENDPOINT}/image-400w.webp 400w`,
         ]);
+      });
+    });
+
+    describe('isValidSourceSetString', () => {
+      test('should be defined', () => {
+        expect(isValidSourceSetString).toBeDefined();
+      });
+
+      test('should return true for a valid source set string', () => {
+        const sourceSetString = `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`;
+
+        expect(isValidSourceSetString(sourceSetString)).toBe(true);
+      });
+
+      test('should return false for an invalid source set string', () => {
+        const sourceSetString = 'invalid-source-set-string';
+
+        expect(isValidSourceSetString(sourceSetString)).toBe(false);
+      });
+    });
+
+    describe('generateSourceSetString', () => {
+      test('should be defined', () => {
+        expect(generateSourceSetString).toBeDefined();
+      });
+
+      test('should return the source set string', () => {
+        const sourceSetString = `${WJT_SPACES_CDN_ENDPOINT}/image-200w.webp 200w`;
+
+        expect(generateSourceSetString(sourceSetString)).toBe(
+          sourceSetString as any
+        );
+      });
+
+      test('should throw an error for an invalid source set string', () => {
+        const sourceSetString = 'invalid-source-set-string';
+
+        expect(() => generateSourceSetString(sourceSetString)).toThrow(
+          'Invalid source set string'
+        );
       });
     });
   });
