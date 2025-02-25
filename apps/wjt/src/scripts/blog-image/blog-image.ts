@@ -43,7 +43,7 @@ export class BlogImage {
     this.CDN_PATH = TARGET_CDN_PATH;
     this.responsiveImageWidths = responsiveImageWidths;
     this.initImageData();
-    this.sourceSet = this.initSourceSet();
+    this.initSourceSet();
   }
 
   /**
@@ -76,8 +76,8 @@ export class BlogImage {
    * Initializes the source set for the image
    * @returns {SourceSetString[]}
    */
-  private initSourceSet(): SourceSetString[] {
-    return generateSrcSet(
+  private initSourceSet(): void {
+    this.sourceSet = generateSrcSet(
       this.responsiveImageWidths,
       this.CDN_PATH,
       this.imageName
