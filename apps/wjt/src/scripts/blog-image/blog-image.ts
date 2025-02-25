@@ -15,6 +15,11 @@ type Width = number;
 type ResponsiveImageWidths = Array<Width>;
 type SourceSetString = string & { __brand: 'SourceSetString' };
 
+type OptimizedImage = {
+  targetWidth: Width;
+  buffer: Buffer;
+};
+
 const DEFAULT_SOURCE_SET: ResponsiveImageWidths = [320, 480, 800, 1600];
 
 export class BlogImage {
@@ -23,6 +28,7 @@ export class BlogImage {
   private readonly CDN_PATH: string;
   private readonly responsiveImageWidths: ResponsiveImageWidths;
   private readonly _imageName: string;
+  private readonly _originalAspectRatio: number;
 
   private _imageSrc: string;
   private _imageMetaData: ImageMetaData;
@@ -44,6 +50,10 @@ export class BlogImage {
     this.responsiveImageWidths = responsiveImageWidths;
     this.initImageData();
     this.initSourceSet();
+    this._originalAspectRatio = calculateAspectRatio(
+      this.imageMetaData.width,
+      this.imageMetaData.height
+    );
   }
 
   /**
@@ -84,6 +94,19 @@ export class BlogImage {
     );
   }
 
+  public async getOptimizedImages(): Promise<OptimizedImage[]> {
+    /* 
+    short-circuit - assumes that a CDN source image will have optimized images. Might need to be refactored in the future re: breaking changes to image format? @wijohnst
+    */
+    if (this._isCDNPath) {
+      return [];
+    }
+
+    if (!this._imageBuffer) {
+      await this.generateImageBuffer();
+    }
+  }
+
   get imageBuffer(): Buffer {
     if (!this._imageBuffer) {
       console.error(
@@ -110,6 +133,10 @@ export class BlogImage {
   get imageName(): string {
     const [imageName] = this.fallbackSrcPath.split('/').reverse()[0].split('.');
     return imageName;
+  }
+
+  get aspectRatio(): number {
+    return this._originalAspectRatio;
   }
 }
 
@@ -163,4 +190,14 @@ export const isValidSourceSetString = (
   cdnMatcher: RegExp = DEFAULT_CDN_MATCHER
 ): boolean => {
   return cdnMatcher.test(value);
+};
+
+/**
+ * Returns the aspect ratio based on the target height and width
+ * @param {number} width
+ * @param {number} height
+ * @returns {number}
+ */
+export const calculateAspectRatio = (width: number, height: number): number => {
+  return width / height;
 };

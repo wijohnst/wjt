@@ -1,6 +1,7 @@
 import mock from 'mock-fs';
 import {
   BlogImage,
+  calculateAspectRatio,
   generateSrcSet,
   isValidSourceSetString,
   generateSourceSetString,
@@ -38,6 +39,7 @@ describe('BlogImage', () => {
 
   afterEach(() => {
     mock.restore();
+    jest.restoreAllMocks();
   });
 
   describe('imageBuffer', () => {
@@ -140,6 +142,16 @@ describe('BlogImage', () => {
     });
   });
 
+  describe('aspectRatio', () => {
+    test('should be defined', () => {
+      expect(sut.aspectRatio).toBeDefined();
+    });
+
+    test('should return the correct aspect ratio', () => {
+      expect(sut.aspectRatio).toBe(1);
+    });
+  });
+
   describe('utils', () => {
     describe('generateSrcSet', () => {
       test('should be defined', () => {
@@ -200,6 +212,70 @@ describe('BlogImage', () => {
           'Invalid source set string'
         );
       });
+    });
+
+    describe('calculateAspectRatio', () => {
+      test('should be defined', () => {
+        expect(calculateAspectRatio).toBeDefined();
+      });
+
+      test('should return the correct aspect ratio', () => {
+        const width = 200;
+        const height = 100;
+
+        expect(calculateAspectRatio(width, height)).toBe(2);
+      });
+
+      test('should return the correct aspect ratio for a square image', () => {
+        const width = 200;
+        const height = 200;
+
+        expect(calculateAspectRatio(width, height)).toBe(1);
+      });
+
+      test('should return the correct aspect ratio for a vertical image', () => {
+        const width = 100;
+        const height = 200;
+
+        expect(calculateAspectRatio(width, height)).toBe(0.5);
+      });
+    });
+  });
+
+  describe('getOptimizedImages', () => {
+    test('should be defined', () => {
+      expect(sut.getOptimizedImages).toBeDefined();
+    });
+
+    test('should call generateImageBuffer if original image buffer is not defined', async () => {
+      const generateImageBufferSpy = jest.spyOn(sut, 'generateImageBuffer');
+
+      await sut.getOptimizedImages();
+
+      expect(generateImageBufferSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not call generateImageBuffer twice if original image buffer is defined', async () => {
+      const generateImageBufferSpy = jest.spyOn(sut, 'generateImageBuffer');
+
+      await sut.generateImageBuffer();
+      await sut.getOptimizedImages();
+
+      expect(generateImageBufferSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('should return an empty array if the original image is a CDN image', async () => {
+      const cdnMatcher = /cdn\.example\.com/;
+      const cdnNode = parseMarkdownString(
+        '![alt-text$200x200](https://cdn.example.com/image.jpg)'
+      );
+      const [cdnImageNode] = getImageNodes(cdnNode);
+
+      const cdnImage = new BlogImage(cdnImageNode, cdnMatcher);
+
+      const optimizedImages = await cdnImage.getOptimizedImages();
+
+      expect(optimizedImages).toEqual([]);
     });
   });
 });
