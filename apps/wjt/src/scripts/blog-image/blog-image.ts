@@ -74,7 +74,7 @@ export class BlogImage {
 
   /**
    * Initializes the source set for the image
-   * @returns {SourceSetString[]}
+   * @returns {void}
    */
   private initSourceSet(): void {
     this.sourceSet = generateSrcSet(
@@ -137,7 +137,7 @@ export const generateSrcSet = (
 };
 
 /**
- * SourceSetString factory
+ * SourceSetString factory and validation
  * @param {string} value
  * @param {RegExp} cdnMatcher - default is DEFAULT_CDN_MATCHER
  * @returns {SourceSetString}
