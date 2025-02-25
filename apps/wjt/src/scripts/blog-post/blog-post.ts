@@ -6,6 +6,7 @@ import {
   generatePostImage,
   _updateImageSources,
 } from './blog-post.utils';
+import { BlogImage } from '../blog-image/blog-image';
 
 /**
  * Represents the required front matter for a blog post
@@ -57,6 +58,7 @@ export interface IBlogPost {
   parsedPost: Post;
   postMarkup: string;
   postImages?: PostImage[];
+  blogImages?: BlogImage[];
 
   updateImageSources(imageUpdateMap: ImageUpdateMap[]): void;
 }
@@ -65,6 +67,7 @@ export class BlogPost implements IBlogPost {
   parsedPost: Post;
   postMarkup: string;
   postImages?: PostImage[] | undefined;
+  blogImages?: BlogImage[] = [];
 
   private _imageNodes?: Node[] | undefined;
 
@@ -73,11 +76,18 @@ export class BlogPost implements IBlogPost {
     this.postMarkup = renderPost(this.parsedPost);
     this._imageNodes = getImageNodes(this.parsedPost.content);
     this.initPostImages();
+    this.initBlogImages();
   }
 
   private initPostImages(): void {
     this.postImages = this._imageNodes?.map((node: Node) => {
       return generatePostImage(node);
+    });
+  }
+
+  private initBlogImages(): void {
+    this._imageNodes?.forEach((node: Node) => {
+      this.blogImages?.push(new BlogImage(node));
     });
   }
 
