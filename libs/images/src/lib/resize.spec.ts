@@ -1,4 +1,4 @@
-import { resizeBySet, ResizeSet } from './resize';
+import { resizeBySet, ResizeSet, resize } from './resize';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 describe('resize', () => {
@@ -25,6 +25,20 @@ describe('resize', () => {
       await expect(async () => {
         await resizeBySet(target, sizeTargets);
       }).rejects.toThrow();
+    });
+  });
+
+  describe('resize', () => {
+    test('should be defined', () => {
+      expect(resize).toBeDefined();
+    });
+
+    test('should return the expected output', async () => {
+      const target = readFileSync(
+        join(__dirname, '/sample_images/200_200.jpg')
+      );
+      const result = await resize(100, 100, target);
+      expect(result).toEqual(expect.any(Buffer));
     });
   });
 });

@@ -11,6 +11,7 @@ exports[`blog-post blogImages should return an array of blog images 1`] = `
     },
     "_imageSrc": "./path/to/image-1.jpg",
     "_isCDNPath": false,
+    "_originalAspectRatio": 2,
     "fallbackSrcPath": "./path/to/image-1.jpg",
     "responsiveImageWidths": [
       320,

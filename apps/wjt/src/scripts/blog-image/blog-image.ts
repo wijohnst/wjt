@@ -1,4 +1,4 @@
-import { getBufferFromPath } from '@wjt/images';
+import { getBufferFromPath, resize } from '@wjt/images';
 import { Node } from 'commonmark';
 import { isCdnImage as _isCDNImage } from '@wjt/images';
 import {
@@ -15,6 +15,11 @@ type Width = number;
 type ResponsiveImageWidths = Array<Width>;
 type SourceSetString = string & { __brand: 'SourceSetString' };
 
+type OptimizedImage = {
+  targetWidth: Width;
+  buffer: Buffer;
+};
+
 const DEFAULT_SOURCE_SET: ResponsiveImageWidths = [320, 480, 800, 1600];
 
 export class BlogImage {
@@ -23,6 +28,7 @@ export class BlogImage {
   private readonly CDN_PATH: string;
   private readonly responsiveImageWidths: ResponsiveImageWidths;
   private readonly _imageName: string;
+  private readonly _originalAspectRatio: number;
 
   private _imageSrc: string;
   private _imageMetaData: ImageMetaData;
@@ -44,6 +50,10 @@ export class BlogImage {
     this.responsiveImageWidths = responsiveImageWidths;
     this.initImageData();
     this.initSourceSet();
+    this._originalAspectRatio = calculateAspectRatio(
+      this.imageMetaData.width,
+      this.imageMetaData.height
+    );
   }
 
   /**
@@ -74,7 +84,7 @@ export class BlogImage {
 
   /**
    * Initializes the source set for the image
-   * @returns {SourceSetString[]}
+   * @returns {void}
    */
   private initSourceSet(): void {
     this.sourceSet = generateSrcSet(
@@ -82,6 +92,40 @@ export class BlogImage {
       this.CDN_PATH,
       this.imageName
     );
+  }
+
+  public async getOptimizedImages(): Promise<OptimizedImage[]> {
+    /* 
+    short-circuit - assumes that a CDN source image will have optimized images. Might need to be refactored in the future re: breaking changes to image format? @wijohnst
+    */
+    if (this._isCDNPath) {
+      return [];
+    }
+
+    if (!this._imageBuffer) {
+      await this.generateImageBuffer();
+    }
+
+    const images: OptimizedImage[] = [];
+
+    for (const targetWidth of this.responsiveImageWidths) {
+      const targetHeight = Math.round(targetWidth / this._originalAspectRatio);
+
+      const resizedBuffer = await resize(
+        targetWidth,
+        targetHeight,
+        this._imageBuffer
+      );
+
+      const optimizedImage = {
+        targetWidth,
+        buffer: resizedBuffer,
+      };
+
+      images.push(optimizedImage);
+    }
+
+    return images;
   }
 
   get imageBuffer(): Buffer {
@@ -111,6 +155,10 @@ export class BlogImage {
     const [imageName] = this.fallbackSrcPath.split('/').reverse()[0].split('.');
     return imageName;
   }
+
+  get aspectRatio(): number {
+    return this._originalAspectRatio;
+  }
 }
 
 // UTILS
@@ -137,7 +185,7 @@ export const generateSrcSet = (
 };
 
 /**
- * SourceSetString factory
+ * SourceSetString factory and validation
  * @param {string} value
  * @param {RegExp} cdnMatcher - default is DEFAULT_CDN_MATCHER
  * @returns {SourceSetString}
@@ -163,4 +211,14 @@ export const isValidSourceSetString = (
   cdnMatcher: RegExp = DEFAULT_CDN_MATCHER
 ): boolean => {
   return cdnMatcher.test(value);
+};
+
+/**
+ * Returns the aspect ratio based on the target height and width
+ * @param {number} width
+ * @param {number} height
+ * @returns {number}
+ */
+export const calculateAspectRatio = (width: number, height: number): number => {
+  return width / height;
 };

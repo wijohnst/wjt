@@ -30,3 +30,18 @@ export const resizeBySet = async (
 
   return output;
 };
+
+/**
+ * Simple resize function that accepts a buffer and resizes it to the specified width and height
+ * @param {number} width
+ * @param {number} height
+ * @param {Buffer} source
+ * @returns {Promise<Buffer>}
+ */
+export const resize = async (
+  width: number,
+  height: number,
+  source: Buffer
+): Promise<Buffer> => {
+  return sharp(source).resize(width, height).toBuffer();
+};
