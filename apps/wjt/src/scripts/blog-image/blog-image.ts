@@ -1,4 +1,4 @@
-import { getBufferFromPath } from '@wjt/images';
+import { getBufferFromPath, resize } from '@wjt/images';
 import { Node } from 'commonmark';
 import { isCdnImage as _isCDNImage } from '@wjt/images';
 import {
@@ -105,6 +105,27 @@ export class BlogImage {
     if (!this._imageBuffer) {
       await this.generateImageBuffer();
     }
+
+    const images: OptimizedImage[] = [];
+
+    for (const targetWidth of this.responsiveImageWidths) {
+      const targetHeight = Math.round(targetWidth / this._originalAspectRatio);
+
+      const resizedBuffer = await resize(
+        targetWidth,
+        targetHeight,
+        this._imageBuffer
+      );
+
+      const optimizedImage = {
+        targetWidth,
+        buffer: resizedBuffer,
+      };
+
+      images.push(optimizedImage);
+    }
+
+    return images;
   }
 
   get imageBuffer(): Buffer {

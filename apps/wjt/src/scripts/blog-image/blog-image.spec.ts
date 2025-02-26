@@ -1,4 +1,6 @@
 import mock from 'mock-fs';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import {
   BlogImage,
   calculateAspectRatio,
@@ -29,7 +31,9 @@ describe('BlogImage', () => {
     const [node] = getImageNodes(parentNode);
 
     mock({
-      'path/to/image.jpg': Buffer.from('image data'),
+      'path/to/image.jpg': readFileSync(
+        join(__dirname, '/test-images/sample_image_200_200.jpg')
+      ),
     });
 
     sut = new BlogImage(node, DEFAULT_CDN_MATCHER, WJT_SPACES_CDN_ENDPOINT, [
@@ -276,6 +280,17 @@ describe('BlogImage', () => {
       const optimizedImages = await cdnImage.getOptimizedImages();
 
       expect(optimizedImages).toEqual([]);
+    });
+
+    test('should optimize the image for each width in the source set', async () => {
+      const optimizedImages = await sut.getOptimizedImages();
+
+      expect(optimizedImages).toEqual([
+        {
+          targetWidth: 200,
+          buffer: expect.any(Buffer),
+        },
+      ]);
     });
   });
 });
