@@ -97,4 +97,10 @@ export class BlogPost implements IBlogPost {
     this.parsedPost = updatedPost;
     this.postMarkup = renderPost(updatedPost);
   }
+
+  public getBlogImagesToUpdate(): BlogImage[] {
+    return this.blogImages?.filter(
+      (blogImage: BlogImage) => !blogImage.isCDNPath
+    );
+  }
 }
