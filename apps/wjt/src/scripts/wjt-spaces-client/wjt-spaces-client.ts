@@ -13,6 +13,7 @@ export const WJT_SPACES_ORIGIN_ENDPOINT = `https://wjt.sfo2.digitaloceanspaces.c
 export const WJT_SPACES_CDN_ENDPOINT = `https://wjt.sfo2.cdn.digitaloceanspaces.com`;
 export const WJT_SPACES_ENDPOINT = `https://sfo2.digitaloceanspaces.com`;
 export const WJT_SPACES_REGION = `sfo2`;
+export const WJT_SPACES_CONCURRENT_UPLOADS = 10;
 export const DEFAULT_CDN_MATCHER =
   /https:\/\/wjt\.sfo2\.cdn\.digitaloceanspaces\.com\/.*/;
 
@@ -87,6 +88,10 @@ export class WjtSpacesClient {
       console.error(error);
     }
   }
+
+  public async optimizedWebPUpload(
+    params: Pick<PutObjectCommandInput, 'Body' | 'Key'>
+  ): Promise<void> {}
 }
 
 export const wjtSpacesClientFactory = (
