@@ -42,6 +42,22 @@ describe('blog-post', () => {
     expect(sut.postImages).toMatchSnapshot();
   });
 
+  test('should return the blog images that need CDN updates', () => {
+    const blogImagesToUpdate = sut.getBlogImagesToUpdate();
+
+    expect(blogImagesToUpdate).toHaveLength(1);
+    expect(blogImagesToUpdate).toMatchSnapshot();
+  });
+
+  test('should return an empty array when there are no blog images to update', () => {
+    sut = new BlogPost(rawPostMocks[1]);
+
+    const blogImagesToUpdate = sut.getBlogImagesToUpdate();
+
+    expect(blogImagesToUpdate).toHaveLength(0);
+    expect(blogImagesToUpdate).toMatchSnapshot();
+  });
+
   describe('blogImages', () => {
     test('should be defined', () => {
       expect(sut.blogImages).toBeDefined();
