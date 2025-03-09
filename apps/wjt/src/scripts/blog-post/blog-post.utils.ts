@@ -115,6 +115,7 @@ export const renderPost = (post: Post): string => {
   }).replace(styleRegex, '');
 
   const parsedContent = new Parser().parse(content);
+  //   const writer = new BlogPostRenderer()
   const writer = new HtmlRenderer();
   const html = writer.render(parsedContent);
 
