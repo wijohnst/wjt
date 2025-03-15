@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@wjt/images": ["libs/images/src/index.ts"]
+      "@wjt/images": ["libs/images/src/index.ts"],
+      "@wjt/markdown": ["libs/markdown/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
