@@ -3,6 +3,12 @@ import { Doc as Document } from '../Doc';
 import mock from 'mock-fs';
 import fs from 'fs';
 
+import console from 'console';
+
+const mockLogger = jest.mock('console', () => ({
+  log: jest.fn(),
+}));
+
 describe('Markdown Document', () => {
   test('should be defined', () => {
     expect(Markdown).toBeDefined();
@@ -86,6 +92,47 @@ describe('Markdown Document', () => {
       await expect(sut.update({ matcher, replacement })).rejects.toThrow(
         'Error updating path/to/file.md. No matches found using matched: /no match/'
       );
+    });
+  });
+
+  describe('report', () => {
+    const mockFileSystem = {
+      'path/to/file.md': 'report me',
+    };
+
+    beforeEach(() => {
+      mock(mockFileSystem);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    test('should be defined', () => {
+      const sut = new Markdown('path/to/file.md');
+      expect(sut.report).toBeDefined();
+    });
+
+    test('should log original value if no updates were made', () => {
+      const sut = new Markdown('path/to/file.md');
+      const loggerSpy = jest.spyOn(sut.logger, 'log');
+
+      sut.report();
+
+      expect(loggerSpy).toHaveBeenCalledWith('report me');
+    });
+
+    test('should log updated value if updates were made', async () => {
+      const sut = new Markdown('path/to/file.md');
+      const loggerSpy = jest.spyOn(sut.logger, 'log');
+
+      const matcher = new RegExp('report me');
+      const replacement = 'reported';
+
+      await sut.update({ matcher, replacement });
+      sut.report();
+
+      expect(loggerSpy).toHaveBeenCalledWith('reported');
     });
   });
 });

@@ -9,6 +9,11 @@ export class Markdown extends Document {
     super(filePath);
   }
 
+  /**
+   * Accepts a matcher and a replacement value and writes the updated value to the file
+   * @param {MarkdownUpdateParams} { matcher, replacement }
+   * @returns {Promise<void>}
+   */
   public async update({
     matcher,
     replacement,
@@ -23,5 +28,20 @@ export class Markdown extends Document {
 
     this.updatedValue = Buffer.from(updatedValue);
     this.write(this.updatedValue);
+  }
+
+  /**
+   * Logs the current value of the target markdown document
+   * @returns {Promise<void>}
+   */
+  public async report(): Promise<void> {
+    const isUpdated = this.bufferHasValue(this.updatedValue);
+
+    if (isUpdated) {
+      this.logger.log(this.updatedValue.toString());
+      return;
+    }
+
+    this.logger.log(this.value.toString());
   }
 }
