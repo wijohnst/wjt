@@ -15,4 +15,11 @@ export abstract class Doc {
     this.name = _path.basename(filePath, this.fileExtension);
     this.value = fs.readFileSync(filePath);
   }
+
+  public abstract update(params: unknown): Promise<void>;
+
+  protected write(buffer: Buffer): Promise<void> {
+    fs.writeFileSync(this.path, buffer);
+    return;
+  }
 }
