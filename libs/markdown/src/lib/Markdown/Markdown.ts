@@ -1,12 +1,24 @@
 import { Doc as Document } from '../Doc';
 
+import { Parser, Node as CommonmarkNode } from 'commonmark';
+
 type MarkdownUpdateParams = {
   matcher: RegExp;
   replacement: string;
 };
+
 export class Markdown extends Document {
-  constructor(filePath: string, logger: typeof console = console) {
+  private parser: Parser;
+  public AST: CommonmarkNode;
+
+  constructor(
+    filePath: string,
+    logger: typeof console = console,
+    parser: Parser = new Parser()
+  ) {
     super(filePath, logger);
+
+    this.parser = parser;
   }
 
   /**
@@ -43,5 +55,30 @@ export class Markdown extends Document {
     }
 
     this.logger.log(this.value.toString());
+  }
+
+  /**
+   * Parses the markdown document into an AST
+   */
+  public parse(): void {
+    const input = this.toString();
+
+    this.AST = this.parser.parse(input);
+  }
+
+  /**
+   * Returns the string representation of the markdown document with the latest values
+   * @returns {string}
+   */
+  override toString(): string {
+    if (this.hasUpdatedValue()) {
+      return this.updatedValue.toString();
+    }
+
+    return this.value.toString();
+  }
+
+  private hasUpdatedValue(): boolean {
+    return this.bufferHasValue(this.updatedValue);
   }
 }

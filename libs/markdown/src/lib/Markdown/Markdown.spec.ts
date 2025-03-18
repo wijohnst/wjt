@@ -2,6 +2,7 @@ import { Markdown } from './Markdown';
 import { Doc as Document } from '../Doc';
 import mock from 'mock-fs';
 import fs from 'fs';
+import { Node as CommonmarkNode } from 'commonmark';
 
 describe('Markdown Document', () => {
   test('should be defined', () => {
@@ -131,6 +132,80 @@ describe('Markdown Document', () => {
       sut.report();
 
       expect(logSpy).toHaveBeenCalledWith('reported');
+    });
+  });
+
+  describe('parse', () => {
+    let sut: Markdown;
+
+    const mockFileSystem = {
+      'path/to/file.md': 'update me',
+    };
+
+    beforeEach(() => {
+      const mockLogger = jest.fn();
+      mock(mockFileSystem);
+
+      sut = new Markdown(
+        'path/to/file.md',
+        mockLogger as unknown as typeof console
+      );
+    });
+
+    afterEach(() => {
+      mock.restore();
+      jest.restoreAllMocks();
+    });
+
+    test('should be defined', () => {
+      expect(sut.parse).toBeDefined();
+    });
+
+    test('should parse the markdown document into an AST', () => {
+      sut.parse();
+
+      expect(sut.AST).toBeDefined();
+      expect(sut.AST).toBeInstanceOf(CommonmarkNode);
+    });
+  });
+
+  describe('toString', () => {
+    let sut: Markdown;
+
+    const mockFileSystem = {
+      'path/to/file.md': 'update me',
+    };
+
+    beforeEach(() => {
+      const mockLogger = jest.fn();
+      mock(mockFileSystem);
+
+      sut = new Markdown(
+        'path/to/file.md',
+        mockLogger as unknown as typeof console
+      );
+    });
+
+    afterEach(() => {
+      mock.restore();
+      jest.restoreAllMocks();
+    });
+
+    test('should be defined', () => {
+      expect(sut.toString).toBeDefined();
+    });
+
+    test('should return the original value if no updates were made', () => {
+      expect(sut.toString()).toBe('update me');
+    });
+
+    test('should return the updated value if it exists', async () => {
+      const matcher = new RegExp('update me');
+      const replacement = 'updated';
+
+      await sut.update({ matcher, replacement });
+
+      expect(sut.toString()).toBe('updated');
     });
   });
 });
