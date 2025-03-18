@@ -5,8 +5,8 @@ type MarkdownUpdateParams = {
   replacement: string;
 };
 export class Markdown extends Document {
-  constructor(filePath: string) {
-    super(filePath);
+  constructor(filePath: string, logger: typeof console = console) {
+    super(filePath, logger);
   }
 
   /**
@@ -22,7 +22,7 @@ export class Markdown extends Document {
 
     if (updatedValue === this.value.toString()) {
       throw new Error(
-        `Error updating ${this.path}. No matches found using matched: ${matcher}`
+        `Error updating ${this.path}. No matches found using matcher: ${matcher}`
       );
     }
 

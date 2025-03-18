@@ -3,12 +3,6 @@ import { Doc as Document } from '../Doc';
 import mock from 'mock-fs';
 import fs from 'fs';
 
-import console from 'console';
-
-const mockLogger = jest.mock('console', () => ({
-  log: jest.fn(),
-}));
-
 describe('Markdown Document', () => {
   test('should be defined', () => {
     expect(Markdown).toBeDefined();
@@ -61,8 +55,12 @@ describe('Markdown Document', () => {
     };
 
     beforeEach(() => {
+      const mockLogger = jest.fn();
       mock(mockFileSystem);
-      sut = new Markdown('path/to/file.md');
+      sut = new Markdown(
+        'path/to/file.md',
+        mockLogger as unknown as typeof console
+      );
     });
 
     afterEach(() => {
@@ -90,7 +88,7 @@ describe('Markdown Document', () => {
       const replacement = 'updated';
 
       await expect(sut.update({ matcher, replacement })).rejects.toThrow(
-        'Error updating path/to/file.md. No matches found using matched: /no match/'
+        'Error updating path/to/file.md. No matches found using matcher: /no match/'
       );
     });
   });
@@ -114,6 +112,7 @@ describe('Markdown Document', () => {
     });
 
     test('should log original value if no updates were made', () => {
+      const log = jest.spyOn(console, 'log').mockImplementation(() => {});
       const sut = new Markdown('path/to/file.md');
       const loggerSpy = jest.spyOn(sut.logger, 'log');
 
@@ -123,8 +122,8 @@ describe('Markdown Document', () => {
     });
 
     test('should log updated value if updates were made', async () => {
+      const log = jest.spyOn(console, 'log').mockImplementation(() => {});
       const sut = new Markdown('path/to/file.md');
-      const loggerSpy = jest.spyOn(sut.logger, 'log');
 
       const matcher = new RegExp('report me');
       const replacement = 'reported';
@@ -132,7 +131,7 @@ describe('Markdown Document', () => {
       await sut.update({ matcher, replacement });
       sut.report();
 
-      expect(loggerSpy).toHaveBeenCalledWith('reported');
+      expect(sut.logger.log).toHaveBeenCalledWith('reported');
     });
   });
 });
