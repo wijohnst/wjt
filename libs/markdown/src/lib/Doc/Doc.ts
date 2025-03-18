@@ -29,4 +29,8 @@ export abstract class Doc {
   protected bufferHasValue(buffer: Buffer): boolean {
     return buffer?.length > 0;
   }
+
+  public toString(): string {
+    return this.value.toString();
+  }
 }
