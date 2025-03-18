@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@wjt/blog": ["libs/blog/src/index.ts"],
       "@wjt/images": ["libs/images/src/index.ts"],
       "@wjt/markdown": ["libs/markdown/src/index.ts"]
     }
