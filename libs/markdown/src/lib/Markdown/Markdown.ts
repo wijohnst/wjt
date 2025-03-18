@@ -1,6 +1,6 @@
 import { Doc as Document } from '../Doc';
 
-import { Parser, Node as CommonmarkNode } from 'commonmark';
+import { Parser, Node as CommonmarkNode, NodeType } from 'commonmark';
 
 type MarkdownUpdateParams = {
   matcher: RegExp;
@@ -19,6 +19,7 @@ export class Markdown extends Document {
     super(filePath, logger);
 
     this.parser = parser;
+    this.AST = this.parser.parse(this.toString());
   }
 
   /**
@@ -78,7 +79,49 @@ export class Markdown extends Document {
     return this.value.toString();
   }
 
+  /**
+   * Checks that the given buffer has a value
+   * @returns {boolean}
+   */
   private hasUpdatedValue(): boolean {
     return this.bufferHasValue(this.updatedValue);
+  }
+
+  /**
+   * Returns the Commonmark nodes of the given type from the document
+   * @param {NodeType} type
+   * @returns {CommonmarkNode[]}
+   */
+  public getNodesByType(type: NodeType): CommonmarkNode[] {
+    const nodes: CommonmarkNode[] = [];
+
+    const walker = this.AST.walker();
+    let event = walker.next();
+
+    while (event) {
+      const { node } = event;
+
+      if (node.type === type) {
+        nodes.push(node);
+      }
+
+      event = walker.next();
+    }
+
+    return this.dedupeNodes(nodes);
+  }
+
+  /**
+   * Removes duplicate nodes from the array
+   * @param {CommonmarkNode[]} nodes
+   * @returns {CommonmarkNode[]}
+   */
+  private dedupeNodes(nodes: CommonmarkNode[]): CommonmarkNode[] {
+    return nodes.filter((node, index, self) => {
+      const nodeString = node.toString();
+      const nextNodeString = self[index + 1]?.toString();
+
+      return nodeString !== nextNodeString;
+    });
   }
 }

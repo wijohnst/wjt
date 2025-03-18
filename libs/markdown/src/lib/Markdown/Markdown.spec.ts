@@ -2,7 +2,7 @@ import { Markdown } from './Markdown';
 import { Doc as Document } from '../Doc';
 import mock from 'mock-fs';
 import fs from 'fs';
-import { Node as CommonmarkNode } from 'commonmark';
+import { Node as CommonmarkNode, NodeType } from 'commonmark';
 
 describe('Markdown Document', () => {
   test('should be defined', () => {
@@ -206,6 +206,41 @@ describe('Markdown Document', () => {
       await sut.update({ matcher, replacement });
 
       expect(sut.toString()).toBe('updated');
+    });
+  });
+
+  describe('getNodesByType', () => {
+    let sut: Markdown;
+
+    const markdownFile = `# Heading 1 \n\n![alt text](image.jpg)`;
+
+    const mockFileSystem = {
+      'path/to/file.md': markdownFile,
+      'path/to/image.jpg': Buffer.from('image content'),
+    };
+
+    beforeEach(() => {
+      mock(mockFileSystem);
+      sut = new Markdown('path/to/file.md');
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    test('should be defined', () => {
+      expect(sut.getNodesByType).toBeDefined();
+    });
+
+    test('should return the correct nodes', () => {
+      var targetNodes = sut.getNodesByType('image');
+
+      expect(targetNodes).toHaveLength(1);
+      expect(targetNodes[0].type).toBe('image');
+
+      targetNodes = sut.getNodesByType('heading');
+      expect(targetNodes).toHaveLength(1);
+      expect(targetNodes[0].type).toBe('heading');
     });
   });
 });
