@@ -112,17 +112,16 @@ describe('Markdown Document', () => {
     });
 
     test('should log original value if no updates were made', () => {
-      const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation();
       const sut = new Markdown('path/to/file.md');
-      const loggerSpy = jest.spyOn(sut.logger, 'log');
 
       sut.report();
 
-      expect(loggerSpy).toHaveBeenCalledWith('report me');
+      expect(logSpy).toHaveBeenCalledWith('report me');
     });
 
     test('should log updated value if updates were made', async () => {
-      const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation();
       const sut = new Markdown('path/to/file.md');
 
       const matcher = new RegExp('report me');
@@ -131,7 +130,7 @@ describe('Markdown Document', () => {
       await sut.update({ matcher, replacement });
       sut.report();
 
-      expect(sut.logger.log).toHaveBeenCalledWith('reported');
+      expect(logSpy).toHaveBeenCalledWith('reported');
     });
   });
 });
