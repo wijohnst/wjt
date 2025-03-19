@@ -1,20 +1,24 @@
 import { Doc as Document } from '../Doc';
 
-import { Parser, Node as CommonmarkNode, NodeType } from 'commonmark';
+import { Parser, Node, NodeType } from 'commonmark';
 
 type MarkdownUpdateParams = {
   matcher: RegExp;
   replacement: string;
 };
 
+export type CommonmarkNode = Node;
+export type CommonmarkNodeType = NodeType;
+export type CommonmarkParser = Parser;
+
 export class Markdown extends Document {
-  private parser: Parser;
+  private parser: CommonmarkParser;
   public AST: CommonmarkNode;
 
   constructor(
     filePath: string,
     logger: typeof console = console,
-    parser: Parser = new Parser()
+    parser: CommonmarkParser = new Parser()
   ) {
     super(filePath, logger);
 
@@ -89,10 +93,10 @@ export class Markdown extends Document {
 
   /**
    * Returns the Commonmark nodes of the given type from the document
-   * @param {NodeType} type
+   * @param {CommonmarkNodeType} type
    * @returns {CommonmarkNode[]}
    */
-  public getNodesByType(type: NodeType): CommonmarkNode[] {
+  public getNodesByType(type: CommonmarkNodeType): CommonmarkNode[] {
     const nodes: CommonmarkNode[] = [];
 
     const walker = this.AST.walker();
