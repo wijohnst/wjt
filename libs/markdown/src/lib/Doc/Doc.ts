@@ -21,12 +21,30 @@ export abstract class Doc {
   public abstract report(params?: unknown): Promise<void>;
   public abstract update(params: unknown): Promise<void>;
 
+  /**
+   * Writes the buffer to the file
+   * @param {Buffer }buffer
+   * @returns {Promise<void>}
+   */
   protected write(buffer: Buffer): Promise<void> {
     fs.writeFileSync(this.path, buffer);
     return;
   }
 
+  /**
+   * Determines if the buffer has a value
+   * @param {Buffer} buffer
+   * @returns {boolean}
+   */
   protected bufferHasValue(buffer: Buffer): boolean {
     return buffer?.length > 0;
+  }
+
+  /**
+   * Returns the string value of the buffer
+   * @returns {string}
+   */
+  public toString(): string {
+    return this.value.toString();
   }
 }
