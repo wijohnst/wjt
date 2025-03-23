@@ -233,7 +233,7 @@ describe('Markdown Document', () => {
     });
 
     test('should return the correct nodes', () => {
-      var targetNodes = sut.getNodesByType('image');
+      let targetNodes = sut.getNodesByType('image');
 
       expect(targetNodes).toHaveLength(1);
       expect(targetNodes[0].type).toBe('image');
