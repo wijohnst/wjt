@@ -4,6 +4,9 @@ export type MarkdownCrawlerConfig = CrawlerConfig & {
   targetDir: string;
 };
 
+/**
+ * MarkdownCrawler - class for crawling a directory for markdown files
+ */
 export class MarkdownCrawler extends Crawler<MarkdownCrawlerConfig> {
   private readonly targetFileExtension = '.md';
 

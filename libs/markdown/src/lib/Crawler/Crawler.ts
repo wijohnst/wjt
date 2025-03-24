@@ -4,6 +4,9 @@ export type CrawlerConfig = {
   targetDir: string;
 };
 
+/**
+ * Crawler - abstract class for crawling a directory
+ */
 export abstract class Crawler<T extends CrawlerConfig> {
   protected config: T;
   protected fs: typeof fs;
