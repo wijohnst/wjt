@@ -1,8 +1,12 @@
 import { Markdown } from './Markdown';
+import {
+  MockMarkdownFileSystem,
+  MockMarkdownFilesPaths,
+} from './MarkdownMocks';
 import { Doc as Document } from '../Doc';
 import mock from 'mock-fs';
 import fs from 'fs';
-import { Node as CommonmarkNode, NodeType } from 'commonmark';
+import { Node as CommonmarkNode } from 'commonmark';
 
 describe('Markdown Document', () => {
   test('should be defined', () => {
@@ -12,13 +16,9 @@ describe('Markdown Document', () => {
   describe('Document properties', () => {
     let sut: Markdown;
 
-    const mockFileSystem = {
-      'path/to/file.md': 'file content',
-    };
-
     beforeEach(() => {
-      mock(mockFileSystem);
-      sut = new Markdown('path/to/file.md');
+      mock(MockMarkdownFileSystem);
+      sut = new Markdown(MockMarkdownFilesPaths.FILE);
     });
 
     afterEach(() => {
@@ -30,7 +30,7 @@ describe('Markdown Document', () => {
     });
 
     test('should have a path property', () => {
-      expect(sut.path).toBe('path/to/file.md');
+      expect(sut.path).toBe('/path/to/file.md');
     });
 
     test('should have a fileExtension property', () => {
@@ -51,15 +51,11 @@ describe('Markdown Document', () => {
   describe('update', () => {
     let sut: Markdown;
 
-    const mockFileSystem = {
-      'path/to/file.md': 'update me',
-    };
-
     beforeEach(() => {
       const mockLogger = jest.fn();
-      mock(mockFileSystem);
+      mock(MockMarkdownFileSystem);
       sut = new Markdown(
-        'path/to/file.md',
+        MockMarkdownFilesPaths.UPDATE,
         mockLogger as unknown as typeof console
       );
     });
@@ -79,7 +75,7 @@ describe('Markdown Document', () => {
       await sut.update({ matcher, replacement });
 
       const expectedValue = Buffer.from('updated');
-      const value = fs.readFileSync('path/to/file.md');
+      const value = fs.readFileSync(MockMarkdownFilesPaths.UPDATE);
 
       expect(value).toEqual(expectedValue);
     });
@@ -89,18 +85,14 @@ describe('Markdown Document', () => {
       const replacement = 'updated';
 
       await expect(sut.update({ matcher, replacement })).rejects.toThrow(
-        'Error updating path/to/file.md. No matches found using matcher: /no match/'
+        'Error updating /path/to/update.md. No matches found using matcher: /no match/'
       );
     });
   });
 
   describe('report', () => {
-    const mockFileSystem = {
-      'path/to/file.md': 'report me',
-    };
-
     beforeEach(() => {
-      mock(mockFileSystem);
+      mock(MockMarkdownFileSystem);
     });
 
     afterEach(() => {
@@ -108,13 +100,13 @@ describe('Markdown Document', () => {
     });
 
     test('should be defined', () => {
-      const sut = new Markdown('path/to/file.md');
+      const sut = new Markdown(MockMarkdownFilesPaths.REPORT);
       expect(sut.report).toBeDefined();
     });
 
     test('should log original value if no updates were made', () => {
       const logSpy = jest.spyOn(console, 'log').mockImplementation();
-      const sut = new Markdown('path/to/file.md');
+      const sut = new Markdown(MockMarkdownFilesPaths.REPORT);
 
       sut.report();
 
@@ -123,7 +115,7 @@ describe('Markdown Document', () => {
 
     test('should log updated value if updates were made', async () => {
       const logSpy = jest.spyOn(console, 'log').mockImplementation();
-      const sut = new Markdown('path/to/file.md');
+      const sut = new Markdown(MockMarkdownFilesPaths.REPORT);
 
       const matcher = new RegExp('report me');
       const replacement = 'reported';
@@ -138,16 +130,12 @@ describe('Markdown Document', () => {
   describe('parse', () => {
     let sut: Markdown;
 
-    const mockFileSystem = {
-      'path/to/file.md': 'update me',
-    };
-
     beforeEach(() => {
       const mockLogger = jest.fn();
-      mock(mockFileSystem);
+      mock(MockMarkdownFileSystem);
 
       sut = new Markdown(
-        'path/to/file.md',
+        MockMarkdownFilesPaths.FILE,
         mockLogger as unknown as typeof console
       );
     });
@@ -172,16 +160,12 @@ describe('Markdown Document', () => {
   describe('toString', () => {
     let sut: Markdown;
 
-    const mockFileSystem = {
-      'path/to/file.md': 'update me',
-    };
-
     beforeEach(() => {
       const mockLogger = jest.fn();
-      mock(mockFileSystem);
+      mock(MockMarkdownFileSystem);
 
       sut = new Markdown(
-        'path/to/file.md',
+        MockMarkdownFilesPaths.UPDATE,
         mockLogger as unknown as typeof console
       );
     });
@@ -214,14 +198,9 @@ describe('Markdown Document', () => {
 
     const markdownFile = `# Heading 1 \n\n![alt text](image.jpg)`;
 
-    const mockFileSystem = {
-      'path/to/file.md': markdownFile,
-      'path/to/image.jpg': Buffer.from('image content'),
-    };
-
     beforeEach(() => {
-      mock(mockFileSystem);
-      sut = new Markdown('path/to/file.md');
+      mock(MockMarkdownFileSystem);
+      sut = new Markdown(MockMarkdownFilesPaths.IMAGE_DOC);
     });
 
     afterEach(() => {
