@@ -1,0 +1,18 @@
+---
+title: RawPost
+---
+classDiagram
+    RawPost <|-- Markdown : inherits
+    Markdown <|-- Document : inherits
+    class RawPost {
+        + imageNodes: CommonmarkNode[]
+        + originalContent: string
+        
+        - frontmatterMatcher: RegExp
+        - updatedContent: string
+
+        +get rawFrontMatter(): string
+        +get imageNodes(): CommonmarkNode[]
+        +get rawContent(): string
+    }
+   
