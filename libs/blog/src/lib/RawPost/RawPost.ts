@@ -1,11 +1,10 @@
 import { Markdown, CommonmarkNode } from '@wjt/markdown';
 
 export class RawPost extends Markdown {
-  private readonly frontmatterMatcher = /---([\s\S]*?)---/;
-
   readonly imageNodes: CommonmarkNode[] = [];
   readonly originalContent: string;
 
+  private readonly frontmatterMatcher = /---([\s\S]*?)---/;
   private updatedContent: string;
 
   constructor(filePath: string, logger: typeof console = console) {
