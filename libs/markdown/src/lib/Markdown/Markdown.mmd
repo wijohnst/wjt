@@ -1,0 +1,27 @@
+---
+title: Markdown
+---
+classDiagram
+    Markdown --|> Document : inherits
+    Markdown ..> CommonmarkParser : uses
+    class Markdown {
+        - parser: CommonmarkParser
+        + AST: CommonmarkNode
+
+        - init(filePath: string, logger: Logger, parser: CommonmarkParser): void
+        - hasUpdatedValue(): boolean
+        - dedupeNodes(node: CommonMarkNode[]): CommonMarkNode[]
+        + update(matcher: RexExp, replacement: string): Promise<void>
+        + report(): Promise<void>
+        + parse() : void
+        + toSting()*: string    
+        + getNodesByType(type: CommonmarkNodeType): CommonmarkNode[]
+    }
+    
+    class Document {
+
+    }
+
+    class CommonmarkParser {
+
+    }

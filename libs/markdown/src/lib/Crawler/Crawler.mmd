@@ -1,0 +1,11 @@
+---
+title: Crawler
+---
+classDiagram
+    class Crawler {
+        #config: ~T~
+        #fs: FileSystem
+        
+        +docs: String[]
+        +crawl()* : void
+    }
